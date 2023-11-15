@@ -5,7 +5,7 @@ from time import sleep
 sys.path.append(os.getcwd())
 from .proxy import PROXIES, FREE_PROXIES
 from .agents import AGENTS
-from .customhttp import SeleniumRequest
+from .Requests import SeleniumRequest
 import logging as log
 
 import random
@@ -22,7 +22,7 @@ class SeleniumMiddleware:
     """Scrapy middleware handling the requests using selenium"""
 
     def __init__(self, driver_name, driver_executable_path,
-        browser_executable_path, command_executor, driver_arguments):
+                 browser_executable_path, command_executor, driver_arguments):
         """Initialize the selenium webdriver
 
         Parameters
@@ -108,16 +108,22 @@ class SeleniumMiddleware:
         if not isinstance(request, SeleniumRequest):
             return None
 
-        # 设置cookies前必须访问一次登录的页面
-        self.driver.get('https://twitter.com/home')
-        sleep(10)
-        for cookie_name, cookie_value in request.cookies.items():
-            self.driver.add_cookie(
-                {
-                    'name': cookie_name,
-                    'value': cookie_value
-                }
-            )
+        if len(request.cookies.items()) > 0:
+            # 设置cookies前必须访问一次登录的页面
+            is_login = self.driver.get_cookie('is_login')
+            if not is_login:
+                self.driver.get(request.url)
+                sleep(10)
+
+                # 手动设置cookie
+                for cookie_name, cookie_value in request.cookies.items():
+                    self.driver.add_cookie(
+                        {
+                            'name': cookie_name,
+                            'value': cookie_value
+                        }
+                    )
+        # 如果有cookie, 设置完cookie后打开页面
         self.driver.get(request.url)
 
         if request.wait_until:
@@ -147,6 +153,7 @@ class SeleniumMiddleware:
         """Shutdown the driver when spider is closed"""
 
         self.driver.quit()
+
 
 class CustomHttpProxyFromMysqlMiddleware(object):
     proxies = FREE_PROXIES

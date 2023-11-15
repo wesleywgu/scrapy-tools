@@ -1,4 +1,4 @@
-#coding: utf-8
+# coding: utf-8
 
 import re
 
@@ -17,7 +17,6 @@ from scrapy.spiders import CrawlSpider
 
 
 class CommonSpider(CrawlSpider):
-
     auto_join_text = False
     ''' # css rule example:
     all_css_rules = {
@@ -93,7 +92,8 @@ class CommonSpider(CrawlSpider):
                 for i in sel.css(nk):
                     self.traversal(i, nv, item_class, item, items)
 
-    DEBUG=True
+    DEBUG = True
+
     def debug(self, sth):
         if self.DEBUG == True:
             print(sth)
@@ -112,8 +112,9 @@ class CommonSpider(CrawlSpider):
                 item[k] = _items
 
     keywords = set(['__use', '__list'])
+
     def traversal_dict(self, sel, rules, item_class, item, items, force_1_item):
-        #import pdb; pdb.set_trace()
+        # import pdb; pdb.set_trace()
         item = {}
         for k, v in rules.items():
             if type(v) != dict:
@@ -122,11 +123,11 @@ class CommonSpider(CrawlSpider):
                 if type(v) == list:
                     continue
                 self.deal_text(sel, item, force_1_item, k, v)
-                #import pdb;pdb.set_trace()
+                # import pdb;pdb.set_trace()
             else:
                 item[k] = []
                 for i in sel.css(k):
-                    #print(k, v)
+                    # print(k, v)
                     self.traversal_dict(i, v, item_class, item, item[k], force_1_item)
         items.append(item)
 

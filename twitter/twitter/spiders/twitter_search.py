@@ -12,7 +12,7 @@ try:
 except:
     from scrapy.spiders import BaseSpider as Spider
 
-from misc.customhttp import SeleniumRequest
+from misc.Requests import SeleniumRequest
 
 
 class twitterSpider(Spider):

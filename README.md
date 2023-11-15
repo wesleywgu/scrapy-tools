@@ -1,4 +1,4 @@
-scrapy-examples
+scrapy-tools
 ==============
 
 Multifarious scrapy examples with integrated proxies and agents, which make you comfy to write a spider.
@@ -11,7 +11,7 @@ Don't use it to do anything illegal!
 
 #### Tutorial
 
-    git clone https://github.com/geekan/scrapy-examples
+    git clone https://github.com/wesleywgu/scrapy-tools
     cd scrapy-examples/doubanbook
     scrapy crawl doubanbook
 
@@ -25,7 +25,7 @@ real data from depth2.
 - Depth2: Urls like `http://book.douban.com/subject/1770782/` from depth1
 
 #### Example image
-![douban book](https://raw.githubusercontent.com/geekan/scrapy-examples/master/doubanbook/sample.jpg)
+![douban book](https://raw.githubusercontent.com/wesleywgu/scrapy-tools/master/doubanbook/sample.jpg)
 
 ***
 
