@@ -5,7 +5,11 @@
 
 from scrapy.item import Item, Field
 
-class github_trendingItem(Item):
+class googleItem(Item):
     # define the fields for your item here like:
-    name = Field()
-
+    title = Field()
+    author = Field()
+    pub_time = Field()
+    desc = Field()
+    url = Field()
+    cover = Field()

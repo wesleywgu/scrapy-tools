@@ -34,7 +34,7 @@ class MySQL:
                        passwd=dbconfig['passwd'],
                        db=dbconfig['db'],
                        charset=dbconfig['charset'])
-      except MySQLdb.Error, e:
+      except MySQLdb.Error as e:
         self.error_code = e.args[0]
         error_msg = 'MySQL error! ', e.args[0], e.args[1]
         print error_msg
@@ -56,9 +56,9 @@ class MySQL:
       try:
         self._cur.execute("SET NAMES utf8") 
         result = self._cur.execute(sql)
-      except MySQLdb.Error, e:
+      except MySQLdb.Error as e:
         self.error_code = e.args[0]
-        print "数据库错误代码:",e.args[0],e.args[1]
+        print("数据库错误代码:",e.args[0],e.args[1])
         result = False
       return result
 
@@ -68,9 +68,9 @@ class MySQL:
         self._cur.execute("SET NAMES utf8") 
         result = self._cur.execute(sql)
         self._conn.commit()
-      except MySQLdb.Error, e:
+      except MySQLdb.Error as e:
         self.error_code = e.args[0]
-        print "数据库错误代码:",e.args[0],e.args[1]
+        print("数据库错误代码:",e.args[0],e.args[1])
         result = False
       return result
       
@@ -81,7 +81,7 @@ class MySQL:
         self._cur.execute(sql)
         self._conn.commit()
         return self._conn.insert_id()
-      except MySQLdb.Error, e:
+      except MySQLdb.Error as e:
         self.error_code = e.args[0]
         return False
     

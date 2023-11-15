@@ -1,6 +1,6 @@
 import re
 import json
-from urlparse import urlparse
+from urllib.parse import urlparse
 import urllib
 import pdb
 
