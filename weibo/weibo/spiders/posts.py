@@ -17,10 +17,11 @@ import scrapy
 from lxml import etree
 
 from items import WeiboItem
+from items import WeiboDisplayItem
 
 
 class UserPostsSpider(scrapy.Spider):
-    name = "user_posts"
+    name = "posts"
     allowed_domains = ["weibo.cn"]
     start_urls = [
         "https://m.weibo.cn/api/container/getIndex?container_ext=profile_uid:1669879400&page_type=searchall&containerid=2304131669879400&page=1"
@@ -31,7 +32,12 @@ class UserPostsSpider(scrapy.Spider):
 
     def parse(self, response):
         weibos = self.get_one_page(response)
-        for i in weibos:
+        for weibo in weibos:
+            i = WeiboDisplayItem()
+            i['pub_time'] = weibo['created_at']
+            i['post_url'] = weibo['post_url']
+            i['screen_name'] = weibo['screen_name']
+            i['text'] = weibo['text']
             yield i
 
         # 下一页
@@ -346,11 +352,11 @@ class UserPostsSpider(scrapy.Spider):
         if retweeted_status and retweeted_status.get("id"):  # 转发
             weibo = self.parse_weibo(weibo_info)
             retweet = self.parse_weibo(retweeted_status)
-            retweet["created_at"] = self.standardize_date(retweeted_status["created_at"])[0]
+            retweet["created_at"] = self.standardize_date(retweeted_status["created_at"])[1]
             weibo["retweet"] = retweet
         else:  # 原创
             weibo = self.parse_weibo(weibo_info)
-        weibo["created_at"] = self.standardize_date(weibo_info["created_at"])[0]
+        weibo["created_at"] = self.standardize_date(weibo_info["created_at"])[1]
         weibo['post_url'] = 'https://weibo.com/{user_id}/{bid}'.format(user_id=weibo['user_id'], bid=weibo['bid'])
         weibo['user_main_url'] = 'https://weibo.com/u/{user_id}'.format(user_id=weibo['user_id'])
         return weibo

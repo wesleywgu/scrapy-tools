@@ -4,6 +4,8 @@ import sys
 import requests
 import scrapy
 
+
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import re
@@ -11,13 +13,14 @@ from urllib.parse import unquote
 
 from scrapy.spiders import Spider
 from items import WeiboItem
+from items import WeiboDisplayItem
 from utils import util
 from scrapy.exceptions import CloseSpider
 from urllib.parse import urlparse
 
 
 class weibo_searchSpider(Spider):
-    name = "weibo_search"
+    name = "search"
     allowed_domains = ["s.weibo.com"]
     base_url = 'https://s.weibo.com'
     start_urls = [
@@ -51,7 +54,12 @@ class weibo_searchSpider(Spider):
             print('当前页面搜索结果为空')
         else:
             for weibo in self.parse_weibo(response):
-                yield weibo
+                i = WeiboDisplayItem()
+                i['pub_time'] = weibo['created_at']
+                i['post_url'] = weibo['post_url']
+                i['screen_name'] = weibo['screen_name']
+                i['text'] = weibo['text']
+                yield i
 
             # 下一页
             next_url = response.xpath('//a[@class="next"]/@href').extract_first()
