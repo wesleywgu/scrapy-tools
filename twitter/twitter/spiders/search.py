@@ -7,6 +7,8 @@ from time import sleep
 from selenium.webdriver.common.by import By
 
 from twitter.items import twitterItem
+from selenium.webdriver import ActionChains
+from datetime import datetime, timezone, timedelta
 
 try:
     from scrapy.spiders import Spider
@@ -37,148 +39,45 @@ class twitterSpider(Spider):
 
     def parse_result(self, response):
         browser = response.meta['driver']
+
+        final_tweets = {}
+
         # 模拟多次滚动
-        for _ in range(5):
-            # 提取数据
-            page_cards = browser.find_elements(by=By.XPATH, value='//article[@data-testid="tweet"]')
-            for card in page_cards:
-                tweet = self.get_data(card)
+        for _ in range(20):
+            part_tweets = self.get_tweets(browser)
+            final_tweets.update(part_tweets)
 
-                if tweet:
-                    i = twitterItem()
-                    i['user_name'] = tweet['user_name']
-                    i['pub_time'] = tweet['pub_time']
-                    i['text'] = tweet['text']
-                    i['post_url'] = tweet['post_url']
-                    yield i
-
-            browser.execute_script('window.scrollTo(0, document.body.scrollHeight)')
+            browser.execute_script('window.scrollTo(0, document.body.scrollHeight/20)')
             # 等待动态内容加载
-            self.wait_for_content_to_load(browser)
-            # waiting 2 seconds for the products to load
-            time.sleep(2)
+            sleep(2)
 
+        for i in final_tweets.values():
+            yield i
 
-
-    def wait_for_content_to_load(self, browser):
-        # 自定义等待条件，确保内容加载完毕
-        sleep(5)
-
-    def get_data(self, card):
-        """Extract data from tweet card"""
-        image_links = []
-
-        try:
-            username = card.find_element(by=By.XPATH, value='.//span').text
-        except:
-            return
-
-        try:
-            handle = card.find_element(by=By.XPATH, value='.//span[contains(text(), "@")]').text
-        except:
-            return
-
-        try:
-            postdate = card.find_element(by=By.XPATH, value='.//time').get_attribute('datetime')
-        except:
-            return
-
-        try:
-            text = card.find_element(by=By.XPATH, value='.//div[2]/div[2]/div[1]').text
-        except:
-            text = ""
-
-        try:
-            embedded = card.find_element(by=By.XPATH, value='.//div[2]/div[2]/div[2]').text
-        except:
-            embedded = ""
-
-        # text = comment + embedded
-
-        try:
-            reply_cnt = card.find_element(by=By.XPATH, value='.//div[@data-testid="reply"]').text
-        except:
-            reply_cnt = 0
-
-        try:
-            retweet_cnt = card.find_element(by=By.XPATH, value='.//div[@data-testid="retweet"]').text
-        except:
-            retweet_cnt = 0
-
-        try:
-            like_cnt = card.find_element(by=By.XPATH, value='.//div[@data-testid="like"]').text
-        except:
-            like_cnt = 0
-
-        try:
-            elements = card.find_elements(by=By.XPATH,
-                                          value='.//div[2]/div[2]//img[contains(@src, "https://pbs.twimg.com/")]')
-            for element in elements:
-                image_links.append(element.get_attribute('src'))
-        except:
-            image_links = []
-
-        # if save_images == True:
-        #	for image_url in image_links:
-        #		save_image(image_url, image_url, save_dir)
-        # handle promoted tweets
-
-        try:
-            promoted = card.find_element(by=By.XPATH, value='.//div[2]/div[2]/[last()]//span').text == "Promoted"
-        except:
-            promoted = False
-        if promoted:
-            return
-
-        # get a string of all emojis contained in the tweet
-        try:
-            emoji_tags = card.find_elements(by=By.XPATH, value='.//img[contains(@src, "emoji")]')
-        except:
-            return
-        emoji_list = []
-        for tag in emoji_tags:
+    def get_tweets(self, browser):
+        # 提取数据
+        tweets = {}
+        page_cards = browser.find_elements(by=By.XPATH, value='//article[@data-testid="tweet"]')
+        for card in page_cards:
+            tweet = twitterItem()
             try:
-                filename = tag.get_attribute('src')
-                emoji = chr(int(re.search(r'svg\/([a-z0-9]+)\.svg', filename).group(1), base=16))
-            except AttributeError:
-                continue
-            if emoji:
-                emoji_list.append(emoji)
-        emojis = ' '.join(emoji_list)
+                tweet['user_name'] = card.find_element(by=By.XPATH, value='.//span').text
 
-        # tweet url
-        try:
-            element = card.find_element(by=By.XPATH, value='.//a[contains(@href, "/status/")]')
-            tweet_url = element.get_attribute('href')
-        except:
-            return
+                utc_time_str = card.find_element(by=By.XPATH, value='.//time').get_attribute('datetime')
+                # 将UTC时间字符串转换为datetime对象
+                utc_time = datetime.strptime(utc_time_str, "%Y-%m-%dT%H:%M:%S.%fZ")
+                # 创建时区对象，表示中国的时区为东八区
+                china_timezone = timezone(timedelta(hours=8))
+                # 将UTC时间转换为中国本地时间
+                china_time = utc_time.replace(tzinfo=timezone.utc).astimezone(china_timezone)
+                # 格式化为指定格式的字符串
+                tweet['pub_time'] = china_time.strftime("%Y-%m-%d %H:%M:%S")
 
-        tweet = {
-            'user_name': username
-            , 'user_id': handle
-            , 'pub_time': postdate
-            , 'text': text
-            , 'post_url': tweet_url
-        }
-        # username, handle, postdate, text, embedded, emojis, reply_cnt, retweet_cnt, like_cnt, image_links,
-        # tweet_url)
-        return tweet
-
-    # def parse(self, response):
-    #     page_cards = response.xpath('//article[@data-testid="tweet"]')
-    #
-    #     for card in page_cards:
-    #         username = card.xpath('.//span/text()').get()
-    #         user_id = card.xpath('.//span[contains(text(), "@")]/text()').get()
-    #         postdate = card.xpath('.//time/@datetime').get()
-    #         spans = card.xpath('.//div[@class="css-1dbjc4n"]/div/span/text()')
-    #         text = ''.join(spans.get())
-    #         tweet_url = 'https://twitter.com' + card.xpath('.//a[contains(@href, "/status/")]/@href').get()
-    #
-    #         i = twitterItem()
-    #         i['user_name'] = username
-    #         i['user_id'] = user_id
-    #         i['pub_time'] = postdate
-    #         i['text'] = text
-    #         i['post_url'] = tweet_url
-    #         yield i
+                tweet['text'] = card.find_element(by=By.XPATH, value='.//div[2]/div[2]/div[1]').text
+                tweet['post_url'] = card.find_element(by=By.XPATH,
+                                                      value='.//a[contains(@href, "/status/")]').get_attribute(
+                    'href')
+                tweets[tweet['post_url']] = tweet
+            except:
+                pass
+        return tweets

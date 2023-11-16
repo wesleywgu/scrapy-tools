@@ -42,6 +42,7 @@ DOWNLOAD_DELAY = 1
 SELENIUM_DRIVER_NAME = 'chrome'
 SELENIUM_DRIVER_EXECUTABLE_PATH = which('chromedriver')
 SELENIUM_DRIVER_ARGUMENTS = [
-    '-headless',
+    # '--headless',
     '--proxy-server=%s' % '127.0.0.1:7890',
+    '--user-agent=%s' % 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.50 Safari/537.36'
 ]
