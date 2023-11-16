@@ -5,10 +5,18 @@
 
 from scrapy.item import Item, Field
 
+
 class githubItem(Item):
     # define the fields for your item here like:
     repo_name = Field()
     desc = Field()
     last_update = Field()
-    url=Field()
+    url = Field()
 
+
+class CommitItem(Item):
+    # define the fields for your item here like:
+    url = Field()
+    title = Field()
+    time = Field()
+    author = Field()

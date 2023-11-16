@@ -31,7 +31,7 @@ DOWNLOADER_MIDDLEWARES = {
 }
 
 ITEM_PIPELINES = {
-    # 'twitter.pipelines.JsonWithEncodingPipeline': 300,
+    'twitter.pipelines.JsonWithEncodingPipeline': 300,
     # 'twitter.pipelines.RedisPipeline': 301,
 }
 
@@ -42,6 +42,6 @@ DOWNLOAD_DELAY = 1
 SELENIUM_DRIVER_NAME = 'chrome'
 SELENIUM_DRIVER_EXECUTABLE_PATH = which('chromedriver')
 SELENIUM_DRIVER_ARGUMENTS = [
-    # '-headless',
-    # '--proxy-server=%s' % '127.0.0.1:7890',
+    '-headless',
+    '--proxy-server=%s' % '127.0.0.1:7890',
 ]

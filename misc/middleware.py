@@ -72,6 +72,8 @@ class SeleniumMiddleware:
             capabilities = driver_options.to_capabilities()
             self.driver = webdriver.Remote(command_executor=command_executor,
                                            desired_capabilities=capabilities)
+        # 最大化
+        self.driver.maximize_window()
 
     @classmethod
     def from_crawler(cls, crawler):
@@ -203,6 +205,10 @@ class CustomHttpProxyMiddleware(object):
         # i = random.randint(1, 10)
         # return i <= 2
         return True
+
+class LocalHttpProxyMiddleware(object):
+    def process_request(self, request, spider):
+        request.meta['proxy'] = 'http://127.0.0.1:7890'
 
 
 class CustomUserAgentMiddleware(object):

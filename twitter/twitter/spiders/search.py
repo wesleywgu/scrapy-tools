@@ -1,6 +1,7 @@
 import os
 import re
 import sys
+import time
 from time import sleep
 
 from selenium.webdriver.common.by import By
@@ -16,7 +17,7 @@ from misc.Requests import SeleniumRequest
 
 
 class twitterSpider(Spider):
-    name = "twitter_search"
+    name = "search"
     allowed_domains = ["twitter.com"]
     start_urls = [
         "https://twitter.com/search?q=%E6%8B%BC%E5%A4%9A%E5%A4%9A&src=typed_query",
@@ -38,23 +39,26 @@ class twitterSpider(Spider):
         browser = response.meta['driver']
         # 模拟多次滚动
         for _ in range(5):
+            # 提取数据
+            page_cards = browser.find_elements(by=By.XPATH, value='//article[@data-testid="tweet"]')
+            for card in page_cards:
+                tweet = self.get_data(card)
+
+                if tweet:
+                    i = twitterItem()
+                    i['user_name'] = tweet['user_name']
+                    i['pub_time'] = tweet['pub_time']
+                    i['text'] = tweet['text']
+                    i['post_url'] = tweet['post_url']
+                    yield i
+
             browser.execute_script('window.scrollTo(0, document.body.scrollHeight)')
             # 等待动态内容加载
             self.wait_for_content_to_load(browser)
+            # waiting 2 seconds for the products to load
+            time.sleep(2)
 
-        # 提取数据
-        page_cards = browser.find_elements(by=By.XPATH, value='//article[@data-testid="tweet"]')
-        for card in page_cards:
-            tweet = self.get_data(card)
 
-            i = twitterItem()
-            i['user_name'] = tweet['user_name']
-            i['user_id'] = tweet['user_id']
-            i['pub_time'] = tweet['pub_time']
-            i['text'] = tweet['text']
-            i['post_url'] = tweet['post_url']
-
-            yield i
 
     def wait_for_content_to_load(self, browser):
         # 自定义等待条件，确保内容加载完毕

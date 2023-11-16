@@ -22,7 +22,7 @@ NEWSPIDER_MODULE = 'github.spiders'
 #USER_AGENT = 'github (+http://www.yourdomain.com)'
 
 DOWNLOADER_MIDDLEWARES = {
-   # 'misc.middleware.CustomHttpProxyMiddleware': 400,
+   'misc.middleware.LocalHttpProxyMiddleware': 400,
     'misc.middleware.CustomUserAgentMiddleware': 401,
 }
 
