@@ -1,6 +1,7 @@
 .idea/
 *.swp
 .ipynb_checkpoints/
+*.pyc
 
 cscope.out
 download_file/
