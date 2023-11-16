@@ -20,7 +20,7 @@ class googleSpider(Spider):
     name = "news_search"
     allowed_domains = ["google.com"]
     start_urls = [
-        "https://www.google.com/search?q=%E6%8B%BC%E5%A4%9A%E5%A4%9A&sca_esv=581520105&tbas=0&tbs=qdr:w,sbd:1&tbm=nws&sxsrf=AM9HkKkXb3sBmvO6GPX6Bk-OFf-AauWLOA:1699710999318&ei=F4hPZeqGE5vf2roPk-C5sA4&start=0&sa=N&ved=2ahUKEwiq7tbyjLyCAxWbr1YBHRNwDuY4ChDx0wN6BAgCEAI&biw=1680&bih=825&dpr=2",
+        "https://www.google.com/search?q=%E6%8B%BC%E5%A4%9A%E5%A4%9A&sca_esv=581520105&tbas=0&tbs=qdr:w,sbd:1&tbm=nws&sxsrf=AM9HkKkXb3sBmvO6GPX6Bk-OFf-AauWLOA:1699710999318&ei=F4hPZeqGE5vf2roPk-C5sA4&start=0&sa=N&ved=2ahUKEwiq7tbyjLyCAxWbr1YBHRNwDuY4ChDx0wN6BAgCEAI&biw=1680&bih=825&dpr=2&hl=en",
     ]
 
     def parse(self, response):
@@ -28,14 +28,13 @@ class googleSpider(Spider):
         for news in news_list:
             google_news = googleItem()
             google_news['title'] = news['title']
-            google_news['author'] = news['media']
-            google_news['pub_time'] = news['datetime']
             google_news['desc'] = news['desc']
+            google_news['author'] = news['author']
+            google_news['pub_time'] = news['datetime'].strftime("%Y-%m-%d %H:%M:%S")
             google_news['url'] = news['link']
-            google_news['cover'] = ''
             yield google_news
 
-        next_btn = response.xpath('//*[@id="pnnext"]')
+        next_btn = response.xpath('//a[@aria-label="Next page"]')
         if next_btn:
             current_url = response.request.url
             query_dict = parse_qs(urlparse(current_url).query)
@@ -66,7 +65,8 @@ class googleSpider(Spider):
             except Exception:
                 tmp_text = ''
             try:
-                tmp_link = item.get("href").replace('/url?esrc=s&q=&rct=j&sa=U&url=', '')
+                tmp_link = item.get("href").replace('/url?esrc=s&q=&rct=j&sa=U&url=', '') \
+                    .replace('http://www.google.com', '')
             except Exception:
                 tmp_link = ''
             try:
@@ -89,13 +89,14 @@ class googleSpider(Spider):
             except Exception:
                 tmp_img = ''
             results.append(
-                {'title': tmp_text,
-                 'media': tmp_media,
-                 'date': tmp_date,
-                 'datetime': self.define_date(tmp_date),
-                 'desc': tmp_desc,
-                 'link': tmp_link,
-                 'img': tmp_img}
+                {
+                    'title': tmp_text,
+                    'desc': tmp_desc,
+                    'author': tmp_media,
+                    'date': tmp_date,
+                    'datetime': self.define_date(tmp_date),
+                    'link': tmp_link,
+                }
             )
         return results
 
