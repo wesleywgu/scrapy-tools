@@ -13,5 +13,4 @@ class BaiduNewsItem(Item):
     pub_time = Field()
     desc = Field()
     url = Field()
-    cover = Field()
     title = Field()

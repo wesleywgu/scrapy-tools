@@ -20,7 +20,7 @@ except:
 
 
 class baiduSpider(Spider):
-    name = "news_search"
+    name = "news"
     allowed_domains = ["baidu.com"]
     start_urls = [
         "https://www.baidu.com/s?tn=news&wd=%E6%8B%BC%E5%A4%9A%E5%A4%9A&pn=0&rtt=4&cl=2",
@@ -33,18 +33,10 @@ class baiduSpider(Spider):
             i = BaiduNewsItem()
             i['author'] = news['author']
 
-            pub_time = news['date']
-            i['pub_time'] = pub_time  # todo
-            # if pub_time is not None:
-            #     try:
-            #         __ = [int(i) for i in pub_time.split("-")]
-            #     except ValueError:
-            #         __ = self._convert_time(pub_time, True)
-            #     i['pub_time'] = datetime(__[0], __[1], __[2])
-            # else:
-            #     i['pub_time'] = ''
-
-            i['cover'] = news['cover']
+            if news['date']:
+                i['pub_time'] = self.convert_time(news['date'])
+            else:
+                i['pub_time']=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             i['desc'] = news['des']
             i['url'] = news['url']
             i['title'] = news['title']
@@ -198,15 +190,3 @@ class baiduSpider(Spider):
             return s
         else:
             return (s.year, s.month, s.day, s.hour, s.minute, s.second)
-
-    def _convert_time(self, time_str: str, as_list: bool = False) -> Union[datetime, bool]:
-        """转换有时间差的汉字表示的时间到`datetime.datetime`形式的时间
-
-        Args:
-            time_str (str): 要转换的字符串
-            as_list (bool): 是否以列表形式返回
-
-        Returns:
-            datetime: 转换后的`datetime.datetime`结果
-        """
-        return self.convert_time(time_str, as_list)
