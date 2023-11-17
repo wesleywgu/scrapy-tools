@@ -6,6 +6,7 @@ from typing import Union
 from urllib.parse import urlparse, urlunparse, parse_qs, urlencode
 
 import scrapy
+from scrapy import Request
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -36,10 +37,15 @@ class baiduSpider(Spider):
             if news['date']:
                 i['pub_time'] = self.convert_time(news['date'])
             else:
-                i['pub_time']=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                i['pub_time'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             i['desc'] = news['des']
             i['url'] = news['url']
             i['title'] = news['title']
+
+            time_now = datetime.now()
+            current_time = time_now.strftime("%Y-%m-%d %H:%M:%S")
+            i['craw_time'] = current_time
+            i['source_url'] = response.request.url
             yield i
 
         # 下一页

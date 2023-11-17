@@ -9,8 +9,9 @@ from scrapy.item import Item, Field
 class BaiduNewsItem(Item):
     # define the fields for your item here like:
     title = Field()
-    author = Field()
-    pub_time = Field()
     desc = Field()
+    author = Field()
     url = Field()
-    title = Field()
+    pub_time = Field()
+    craw_time = Field()
+    source_url = Field()
