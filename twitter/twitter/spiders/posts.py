@@ -2,12 +2,13 @@ import os
 import re
 import sys
 import time
+from random import randint
 from time import sleep
 
 from selenium.webdriver.common.by import By
 
 from twitter.items import twitterItem
-from selenium.webdriver import ActionChains
+from selenium.webdriver import ActionChains, Keys
 from datetime import datetime, timezone, timedelta
 
 try:
@@ -19,10 +20,10 @@ from misc.Requests import SeleniumRequest
 
 
 class twitterSpider(Spider):
-    name = "search"
+    name = "posts"
     allowed_domains = ["twitter.com"]
     start_urls = [
-        'https://twitter.com/search?q=%E6%8B%BC%E5%A4%9A%E5%A4%9A&src=typed_query',
+        'https://twitter.com/oldamnnt',
     ]
 
     def start_requests(self):
@@ -41,11 +42,10 @@ class twitterSpider(Spider):
         browser = response.meta['driver']
 
         final_tweets = {}
-
         # 模拟多次滚动
         for _ in range(10):
+            # 等待动态内容加载
             sleep(2)
-
             part_tweets = self.get_tweets(browser)
             final_tweets.update(part_tweets)
 
@@ -53,7 +53,6 @@ class twitterSpider(Spider):
 
         for i in final_tweets.values():
             yield i
-
 
     def scroll_down(self, browser) -> None:
         """Helps to scroll down web page"""
@@ -67,11 +66,11 @@ class twitterSpider(Spider):
     def get_tweets(self, browser):
         # 提取数据
         tweets = {}
-        page_cards = browser.find_elements(by=By.XPATH, value='//article[@data-testid="tweet"]')
+        page_cards = browser.find_elements(by=By.XPATH, value='//div[@data-testid="cellInnerDiv"]')
         for card in page_cards:
             tweet = twitterItem()
             try:
-                tweet['user_name'] = card.find_element(by=By.XPATH, value='.//span').text
+                tweet['user_name'] = card.find_element(by=By.XPATH, value='.//a/div/div[@dir="ltr"]/span/span').text
 
                 utc_time_str = card.find_element(by=By.XPATH, value='.//time').get_attribute('datetime')
                 # 将UTC时间字符串转换为datetime对象
@@ -83,10 +82,13 @@ class twitterSpider(Spider):
                 # 格式化为指定格式的字符串
                 tweet['pub_time'] = china_time.strftime("%Y-%m-%d %H:%M:%S")
 
-                tweet['text'] = card.find_element(by=By.XPATH, value='.//div[2]/div[2]/div[1]').text.replace('\n', '')
+                text_parts = card.find_elements(by=By.XPATH, value='.//div[@dir="auto"]/*')
+                tweet['text'] = ''
+                for i in text_parts:
+                    tweet['text'] = tweet['text'] + i.text
+
                 tweet['post_url'] = card.find_element(by=By.XPATH,
-                                                      value='.//a[contains(@href, "/status/")]').get_attribute(
-                    'href')
+                                                      value='.//a[contains(@href, "/status/")]').get_attribute('href')
                 tweets[tweet['post_url']] = tweet
             except:
                 pass
