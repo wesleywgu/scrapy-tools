@@ -24,7 +24,10 @@ class baiduSpider(Spider):
     name = "news"
     allowed_domains = ["baidu.com"]
     start_urls = [
-        "https://www.baidu.com/s?tn=news&wd=%E6%8B%BC%E5%A4%9A%E5%A4%9A&pn=0&rtt=4&cl=2",
+        "https://www.baidu.com/s?tn=news&rtt=4&bsst=1&cl=2&wd=pdd&medium=0&pn=0",
+        "https://www.baidu.com/s?tn=news&rtt=4&bsst=1&cl=2&wd=pinduoduo&medium=0&pn=0",
+        "https://www.baidu.com/s?tn=news&rtt=4&bsst=1&cl=2&wd=temu&medium=0&pn=0",
+        "https://www.baidu.com/s?tn=news&rtt=4&bsst=1&cl=2&wd=拼多多&medium=0&pn=0",
     ]
 
     def parse(self, response):
@@ -35,7 +38,7 @@ class baiduSpider(Spider):
             i['author'] = news['author']
 
             if news['date']:
-                i['pub_time'] = self.convert_time(news['date'])
+                i['pub_time'] = self.convert_time(news['date']).strftime("%Y-%m-%d %H:%M:%S")
             else:
                 i['pub_time'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             i['desc'] = news['des']

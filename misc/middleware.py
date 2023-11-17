@@ -229,3 +229,16 @@ class WeiboUserAgentMiddleware(object):
         request.headers['Accept'] = DEFAULT_REQUEST_HEADERS['Accept']
         request.headers['Accept-Language'] = DEFAULT_REQUEST_HEADERS['Accept-Language']
         request.headers['Cookie'] = DEFAULT_REQUEST_HEADERS['Cookie']
+
+class BaiduUserAgentMiddleware(object):
+    def process_request(self, request, spider):
+        DEFAULT_REQUEST_HEADERS = {
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+            'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-US;q=0.7',
+            'Cookie': 'PSINO=2;BD_UPN=123253;BAIDUID=4148AC0C82DD086DBD0EAB6A34FEFAE1:SL=0:NR=10:FG=1;BDUSS_BFESS=NTdzloU1c4Q0dKclJjclhod2dYd3J5UmxsSmQ2Y2NaMWZSLVA3TGNTeE1xMzVsSVFBQUFBJCQAAAAAAAAAAAEAAAAUTzM-Z3dwb3N0MTk5MQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEweV2VMHldlTG;__bid_n=18b9fb80cf4491295e9b4e;H_PS_645EC=4f9fvCfHPhthvl1dXgd4tclYbw6uWHUSZAGSugHtaul8klC7m0dkgHO8Cw;ZFY=Xk5iY9dO8fBhC1BxcEkF69w12BVfWHP4FG9XTb0BM0k:C;sug=3;delPer=0;ORIGIN=0;BAIDUID_BFESS=4148AC0C82DD086DBD0EAB6A34FEFAE1:SL=0:NR=10:FG=1;BD_CK_SAM=1;sugstore=0;BA_HECTOR=ak0h240180258k8gag0505a51ile7f71q;ispeed_lsm=2;newlogin=1;BIDUPSID=4148AC0C82DD086DBD0EAB6A34FEFAE1;bdime=0;BDORZ=B490B5EBF6F3CD402E515D22BCDA1598;BDRCVFR[C0p6oIjvx-c]=OewyZereRT6mydlnHc1QhPEUf;BDRCVFR[feWj1Vr5u3D]=I67x6TjHwwYf0;BDRCVFR[gUg2cUtcsBT]=_M5urk4djP3fA4-ILn;BDSVRTM=832;BDUSS=NTdzloU1c4Q0dKclJjclhod2dYd3J5UmxsSmQ2Y2NaMWZSLVA3TGNTeE1xMzVsSVFBQUFBJCQAAAAAAAAAAAEAAAAUTzM-Z3dwb3N0MTk5MQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEweV2VMHldlTG;H_PS_PSSID=39648_39669_39663_39688_39693_39695_39676;Hmery-Time=2164186134;MCITY=-289%3A;PSTM=1696470884;RT="z=1&dm=baidu.com&si=584a1bea-ddb1-4535-8972-c05d34b02755&ss=loz5zare&sl=3&tt=9na&bcn=https%3A%2F%2Ffclog.baidu.com%2Flog%2Fweirwood%3Ftype%3Dperf&ld=ahgd&ul=ai1l&hd=ai3t"'
+        }
+        agent = random.choice(AGENTS)
+        request.headers['User-Agent'] = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36'
+        request.headers['Accept'] = DEFAULT_REQUEST_HEADERS['Accept']
+        request.headers['Accept-Language'] = DEFAULT_REQUEST_HEADERS['Accept-Language']
+        request.headers['Cookie'] = DEFAULT_REQUEST_HEADERS['Cookie']
