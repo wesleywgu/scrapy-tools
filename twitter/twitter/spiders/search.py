@@ -2,12 +2,13 @@ import os
 import re
 import sys
 import time
+from random import randint
 from time import sleep
 
 from selenium.webdriver.common.by import By
 
 from twitter.items import twitterItem
-from selenium.webdriver import ActionChains
+from selenium.webdriver import ActionChains, Keys
 from datetime import datetime, timezone, timedelta
 
 try:
