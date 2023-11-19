@@ -245,3 +245,17 @@ class BaiduUserAgentMiddleware(object):
         request.headers['Accept'] = DEFAULT_REQUEST_HEADERS['Accept']
         request.headers['Accept-Language'] = DEFAULT_REQUEST_HEADERS['Accept-Language']
         request.headers['Cookie'] = DEFAULT_REQUEST_HEADERS['Cookie']
+
+class GoogleUserAgentMiddleware(object):
+    def process_request(self, request, spider):
+        DEFAULT_REQUEST_HEADERS = {
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+            'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-US;q=0.7',
+            'Cookie':'SAPISID=WQYRonAa1WEO_9N9/AIIaCL8N96qOFocbI;__Secure-3PAPISID=WQYRonAa1WEO_9N9/AIIaCL8N96qOFocbI;AEC=Ackid1T9WGly4WBzbps13ab_kmdw_39k5umQcOU2j3I040PUjD4F9trqKw;NID=511=r_Nd0jSHDJwigBMqs_qERsb5gRMjMrVDKcs4fHBLStZuUpN2tZmzncn_XBDchvI9KO_oCcdmjJguY8HUFN8cyLQs4MI-FGgeyYf7l0YmILo_kywFxUdR0bl9LAylborTjlAa5EHRRgr57mOxX8clzv4AyRgPSOmcvkC0wp-VZv9EVYdmYW7LFpDCt2G_zKAyNx5aKGcWrtob7dxWUtGWCtXWTt0EFtnokSERyuteFkBqYEyRir1DMq1OrvxXxBg8K3czpofE-FMCzKpME_nbiYdZyIg_Jl_GwKE-CSIBMXcXi7nrLsZiH1fAyaaCJ79C6QosyyOdxEfeROiGC0dke5NtBRJIwjDIYDummw3hG-lGRs4JhbVZq0ti6g8oxYqeF6uf8hrdDICGVOpkYhOwxtVImmsQM7cWRukZjCNAfw6fRsthHRgasusH4m0lkPIRjk8NaYDCdCNUKhVXHYMg3RbqPX8ifnzWJkDKrr4XJaNe4fXxu3leqE7eqHx6PtR6XQRp-9rbNbi_TBNNDean3vbd9s29Fc6VkeXxCij-sw5oCFYcTJzJszWj5MmwT7VnzP4laOWspGdblGo;APISID=BCS7mxAkCNE1Dk64/AriD-EP9rouzR4W1o;__Secure-1PSIDTS=sidts-CjIBNiGH7gCqdsShJUqEA5fqFre4NH1XHSn2nn68I-L-vZ96SXsVx59nAnWnSEszYAiTshAA;GOOGLE_ABUSE_EXEMPTION=ID=d17133ecbd295396:TM=1700365245:C=r:IP=2406:4440:0:103:1:0:9:a-:S=ceNZmTeO8rCL6hHgnGjzgZk;OTZ=7281490_24_24__24_;__Secure-1PAPISID=WQYRonAa1WEO_9N9/AIIaCL8N96qOFocbI;__Secure-3PSID=cwgq-kaHG9OVj6qb741Afen5jmbrPS8eC6X_momWAhcVcGyMHQc9Y5gkOFlizloQaYjCZg.;1P_JAR=2023-11-19-03;__Secure-1PSID=cwgq-kaHG9OVj6qb741Afen5jmbrPS8eC6X_momWAhcVcGyMVamZOTnv5s8x6pGILoeEzQ.;__Secure-1PSIDCC=ACA-OxPA9kOMe4QqsPFTUzkQfOfKQ035XjC0m1L-JNTYQHeu4Vy1NEZaHT0XcvDuQbVyc3jrp6M;__Secure-3PSIDCC=ACA-OxPh-YabCAJIJ0wVm6PF2T8Kpon2bhbafIq3C5NwQuyqSs_T73q3GyXxBRqoETFVgzjTEWU;__Secure-3PSIDTS=sidts-CjIBNiGH7gCqdsShJUqEA5fqFre4NH1XHSn2nn68I-L-vZ96SXsVx59nAnWnSEszYAiTshAA;DV=o4Yt_wY8R4lTUAuW96t36_5O1rVavpj-BnbWayEtigEAAICGSTB--aTysAAAAASIm0L1K13fLQAAAGnw0XD9ZnENEQAAAA;HSID=AuVL9Nb08ll8F7qc4;SEARCH_SAMESITE=CgQI4JkB;SID=cwgq-kaHG9OVj6qb741Afen5jmbrPS8eC6X_momWAhcVcGyM85rtzU7jbtSbZyZTWkW7gw.;SIDCC=ACA-OxNhDuK9DBGye0yjSh6t5_XmkoXHKqXjhvI-PRFzRM5M5jISRM5U2PMNmbBGGirNOqEpOjU;SSID=AbHEKrhLcnzJNuIQX',
+        }
+        agent = random.choice(AGENTS)
+        request.headers[
+            'User-Agent'] = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36'
+        request.headers['Accept'] = DEFAULT_REQUEST_HEADERS['Accept']
+        request.headers['Accept-Language'] = DEFAULT_REQUEST_HEADERS['Accept-Language']
+        request.headers['Cookie'] = DEFAULT_REQUEST_HEADERS['Cookie']

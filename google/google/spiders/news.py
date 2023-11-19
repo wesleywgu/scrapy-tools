@@ -15,14 +15,14 @@ from urllib.parse import urlparse, urlunparse, parse_qs, urlencode
 
 
 class googleSpider(Spider):
-    name = "search_news"
+    name = "news"
     allowed_domains = ["google.com"]
     start_urls = [
         "https://www.google.com/search?q=%E6%8B%BC%E5%A4%9A%E5%A4%9A&sca_esv=581520105&tbas=0&tbs=qdr:w,sbd:1&tbm=nws&sxsrf=AM9HkKkXb3sBmvO6GPX6Bk-OFf-AauWLOA:1699710999318&ei=F4hPZeqGE5vf2roPk-C5sA4&start=0&sa=N&ved=2ahUKEwiq7tbyjLyCAxWbr1YBHRNwDuY4ChDx0wN6BAgCEAI&biw=1680&bih=825&dpr=2&hl=en",
     ]
 
     def parse(self, response):
-        news_list = self.build_response(response.text)
+        news_list = self.build_response(response)
         for news in news_list:
             google_news = googleItem()
             google_news['title'] = news['title']
@@ -30,9 +30,14 @@ class googleSpider(Spider):
             google_news['author'] = news['author']
             google_news['pub_time'] = news['datetime'].strftime("%Y-%m-%d %H:%M:%S")
             google_news['url'] = news['link']
+
+            time_now = datetime.datetime.now()
+            current_time = time_now.strftime("%Y-%m-%d %H:%M:%S")
+            google_news['craw_time'] = current_time
+            google_news['source_url'] = response.request.url
             yield google_news
 
-        next_btn = response.xpath('//a[@aria-label="Next page"]')
+        next_btn = response.xpath('//a[@id="pnnext"]')
         if next_btn:
             current_url = response.request.url
             query_dict = parse_qs(urlparse(current_url).query)
@@ -53,39 +58,36 @@ class googleSpider(Spider):
         return next_page
 
     def build_response(self, response):
-        content = Soup(response, "html.parser")
-        result = content.find_all("a", attrs={'data-ved': True})
+        result = response.xpath('//div[@data-hveid]/div/div[@data-ved]')
 
         results = []
         for item in result:
             try:
-                tmp_text = item.find("h3").text.replace("\n", "")
+                tmp_text = item.xpath('.//a/div/div[2]/div[2]/text()').get().replace("\n", "")
             except Exception:
                 tmp_text = ''
+
             try:
-                tmp_link = item.get("href").replace('/url?esrc=s&q=&rct=j&sa=U&url=', '') \
-                    .replace('http://www.google.com', '')
+                tmp_desc = item.xpath('.//a/div/div[2]/div[3]/text()').get().replace("\n", "")
+            except Exception:
+                tmp_desc = ''
+
+            try:
+                tmp_link = item.xpath('.//a/@href').get()
             except Exception:
                 tmp_link = ''
             try:
-                tmp_media = item.find('div').find('div').find('div').find_next_sibling('div').text
+                tmp_media = item.xpath('.//a/div/div[2]/div[1]/span/text()').get().replace("\n", "")
             except Exception:
                 tmp_media = ''
             try:
-                tmp_date = item.find('div').find_next_sibling('div').find('span').text
-                tmp_date, tmp_datetime = self.lexical_date_parser(tmp_date)
+                tmp_date_str = item.xpath('.//div[@style="bottom:0px"]/span/text()').get().replace("\n", "")
+                tmp_date, tmp_datetime = self.lexical_date_parser(tmp_date_str)
             except Exception:
                 tmp_date = ''
                 tmp_datetime = None
-            try:
-                sibling = item.find('div').find_next_sibling('div')
-                tmp_desc = sibling.text.replace('\n', '')
-            except Exception:
-                tmp_desc = ''
-            try:
-                tmp_img = item.find("img").get("src")
-            except Exception:
-                tmp_img = ''
+
+
             results.append(
                 {
                     'title': tmp_text,
@@ -135,7 +137,6 @@ class googleSpider(Spider):
         datetime_tmp = None
         date_tmp = copy.copy(date_to_check)
         try:
-            date_tmp = date_tmp[date_tmp.rfind('..') + 2:]
             datetime_tmp = dateparser.parse(date_tmp)
         except:
             date_tmp = None

@@ -1,10 +1,9 @@
 import os
 import sys
+from datetime import datetime
 
 import requests
 import scrapy
-
-
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -24,27 +23,14 @@ class weibo_searchSpider(Spider):
     allowed_domains = ["s.weibo.com"]
     base_url = 'https://s.weibo.com'
     start_urls = [
-        'https://s.weibo.com/weibo?q=pdd&Refer=index',
-
-        # 'https://s.weibo.com/realtime?q=DarkNavy  拼多多&rd=realtime&tw=realtime&Refer=weibo_realtime'
-        # , 'https://s.weibo.com/realtime?q=DarkNavy temu&rd=realtime&tw=realtime&Refer=weibo_realtime'
-        # , 'https://s.weibo.com/realtime?q=Grizzly Research&rd=realtime&tw=realtime&Refer=weibo_realtime'
-        # , 'https://s.weibo.com/realtime?q=pinduoduo malware&rd=realtime&tw=realtime&Refer=weibo_realtime'
-        # , 'https://s.weibo.com/realtime?q=pinduoduo spy&rd=realtime&tw=realtime&Refer=weibo_realtime'
-        # , 'https://s.weibo.com/realtime?q=Siegfried Eggert&rd=realtime&tw=realtime&Refer=weibo_realtime'
-        # , 'https://s.weibo.com/realtime?q=temu malware&rd=realtime&tw=realtime&Refer=weibo_realtime'
-        # , 'https://s.weibo.com/realtime?q=temu spy&rd=realtime&tw=realtime&Refer=weibo_realtime'
-        # , 'https://s.weibo.com/realtime?q=temu 隐私&rd=realtime&tw=realtime&Refer=weibo_realtime'
-        # , 'https://s.weibo.com/realtime?q=拼多多  DARKNAVY&rd=realtime&tw=realtime&Refer=weibo_realtime'
-        # , 'https://s.weibo.com/realtime?q=拼多多 Android漏洞&rd=realtime&tw=realtime&Refer=weibo_realtime'
-        # , 'https://s.weibo.com/realtime?q=拼多多 CISA&rd=realtime&tw=realtime&Refer=weibo_realtime'
-        # , 'https://s.weibo.com/realtime?q=拼多多 卡巴斯基&rd=realtime&tw=realtime&Refer=weibo_realtime'
-        # , 'https://s.weibo.com/realtime?q=拼多多 后门&rd=realtime&tw=realtime&Refer=weibo_realtime'
-        # , 'https://s.weibo.com/realtime?q=拼多多 恶意代码&rd=realtime&tw=realtime&Refer=weibo_realtime'
-        # , 'https://s.weibo.com/realtime?q=拼多多 深蓝&rd=realtime&tw=realtime&Refer=weibo_realtime'
-        # , 'https://s.weibo.com/realtime?q=拼多多 病毒&rd=realtime&tw=realtime&Refer=weibo_realtime'
-        # , 'https://s.weibo.com/realtime?q=拼多多 谷歌应用商店&rd=realtime&tw=realtime&Refer=weibo_realtime'
-        # , 'https://s.weibo.com/realtime?q=拼多多 隐私&rd=realtime&tw=realtime&Refer=weibo_realtime'
+        'https://s.weibo.com/realtime?q=pdd&rd=realtime&tw=realtime&Refer=weibo_realtime',
+        # 'https://s.weibo.com/realtime?q=pinduoduo&rd=realtime&tw=realtime&Refer=weibo_realtime',
+        # 'https://s.weibo.com/realtime?q=temu&rd=realtime&tw=realtime&Refer=weibo_realtime',
+        # 'https://s.weibo.com/realtime?q=拼多多&rd=realtime&tw=realtime&Refer=weibo_realtime',
+        # 'https://m.weibo.cn/search?containerid=100103type%3D1%26q%3D%23pdd%23',
+        # 'https://m.weibo.cn/search?containerid=100103type%3D1%26q%3D%23pinduoduo%23',
+        # 'https://m.weibo.cn/search?containerid=100103type%3D1%26q%3D%23temu%23',
+        # 'https://m.weibo.cn/search?containerid=100103type%3D1%26q%3D%23拼多多%23',
     ]
 
     def parse(self, response):
@@ -55,10 +41,15 @@ class weibo_searchSpider(Spider):
         else:
             for weibo in self.parse_weibo(response):
                 i = WeiboDisplayItem()
-                i['pub_time'] = weibo['created_at']
+                i['pub_time'] = weibo['created_at'] + ":00"
                 i['post_url'] = weibo['post_url']
                 i['screen_name'] = weibo['screen_name']
                 i['text'] = weibo['text']
+
+                time_now = datetime.now()
+                current_time = time_now.strftime("%Y-%m-%d %H:%M:%S")
+                i['craw_time'] = current_time
+                i['source_url'] = response.request.url
                 yield i
 
             # 下一页

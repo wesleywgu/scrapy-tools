@@ -22,15 +22,16 @@ NEWSPIDER_MODULE = 'google.spiders'
 # USER_AGENT = 'google (+http://www.yourdomain.com)'
 
 DOWNLOADER_MIDDLEWARES = {
-    'misc.middleware.CustomHttpProxyMiddleware': 400,
-    'misc.middleware.CustomUserAgentMiddleware': 401,
+    # 'misc.middleware.CustomHttpProxyMiddleware': 400,
+    'misc.middleware.GoogleUserAgentMiddleware': 401,
 }
 
 ITEM_PIPELINES = {
     # 'google.pipelines.JsonWithEncodingPipeline': 300,
     # 'google.pipelines.RedisPipeline': 301,
+    'crawlab.CrawlabPipeline': 300,
 }
 
 LOG_LEVEL = 'DEBUG'
-
+COOKIES_ENABLED = False
 DOWNLOAD_DELAY = 1
