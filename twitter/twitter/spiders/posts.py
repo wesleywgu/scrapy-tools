@@ -87,9 +87,14 @@ class twitterSpider(Spider):
                 for i in text_parts:
                     tweet['text'] = tweet['text'] + i.text
 
-                tweet['post_url'] = card.find_element(by=By.XPATH,
-                                                      value='.//a[contains(@href, "/status/")]').get_attribute('href')
-                tweets[tweet['post_url']] = tweet
+                tweet['url'] = card.find_element(by=By.XPATH,value='.//a[contains(@href, "/status/")]').get_attribute('href')
+
+                time_now = datetime.now()
+                current_time = time_now.strftime("%Y-%m-%d %H:%M:%S")
+                tweet['craw_time'] = current_time
+                tweet['source_url'] = browser.current_url
+
+                tweets[tweet['url']] = tweet
             except:
                 pass
         return tweets

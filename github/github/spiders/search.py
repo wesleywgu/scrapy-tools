@@ -15,7 +15,10 @@ class githubSpider(Spider):
     name = "search"
     allowed_domains = ["github.com"]
     start_urls = [
-        "https://github.com/search?q=pdd&type=repositories",
+        'https://github.com/search?q=pdd&type=repositories&s=updated&o=desc',
+        'https://github.com/search?q=pinduoduo&type=repositories&s=updated&o=desc',
+        'https://github.com/search?q=temu&type=repositories&s=updated&o=desc',
+        'https://github.com/search?q=拼多多&type=repositories&s=updated&o=desc',
     ]
 
     def parse(self, response):
@@ -41,8 +44,14 @@ class githubSpider(Spider):
             i = githubItem()
             i['repo_name'] = repo_name
             i['desc'] = desc
-            i['last_update'] = last_update
+            i['pub_time'] = last_update
             i['url'] = 'https://github.com' + url
+
+            time_now = datetime.now()
+            current_time = time_now.strftime("%Y-%m-%d %H:%M:%S")
+            i['craw_time'] = current_time
+            i['source_url'] = response.request.url
+
             yield i
 
         # 下一页

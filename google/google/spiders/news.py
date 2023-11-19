@@ -8,7 +8,6 @@ except:
     from scrapy.spiders import BaseSpider as Spider
 
 import dateparser, copy
-from bs4 import BeautifulSoup as Soup
 import datetime
 from dateutil.relativedelta import relativedelta
 from urllib.parse import urlparse, urlunparse, parse_qs, urlencode
@@ -18,7 +17,10 @@ class googleSpider(Spider):
     name = "news"
     allowed_domains = ["google.com"]
     start_urls = [
-        "https://www.google.com/search?q=%E6%8B%BC%E5%A4%9A%E5%A4%9A&sca_esv=581520105&tbas=0&tbs=qdr:w,sbd:1&tbm=nws&sxsrf=AM9HkKkXb3sBmvO6GPX6Bk-OFf-AauWLOA:1699710999318&ei=F4hPZeqGE5vf2roPk-C5sA4&start=0&sa=N&ved=2ahUKEwiq7tbyjLyCAxWbr1YBHRNwDuY4ChDx0wN6BAgCEAI&biw=1680&bih=825&dpr=2&hl=en",
+        'https://www.google.com/search?q=pdd&sca_esv=581520105&tbas=0&tbs=qdr:w,sbd:1&tbm=nws&sxsrf=AM9HkKkXb3sBmvO6GPX6Bk-OFf-AauWLOA:1699710999318&ei=F4hPZeqGE5vf2roPk-C5sA4&start=0&sa=N&ved=2ahUKEwiq7tbyjLyCAxWbr1YBHRNwDuY4ChDx0wN6BAgCEAI&biw=1680&bih=825&dpr=2&hl=en',
+        'https://www.google.com/search?q=pinduoduo&sca_esv=581520105&tbas=0&tbs=qdr:w,sbd:1&tbm=nws&sxsrf=AM9HkKkXb3sBmvO6GPX6Bk-OFf-AauWLOA:1699710999318&ei=F4hPZeqGE5vf2roPk-C5sA4&start=0&sa=N&ved=2ahUKEwiq7tbyjLyCAxWbr1YBHRNwDuY4ChDx0wN6BAgCEAI&biw=1680&bih=825&dpr=2&hl=en',
+        'https://www.google.com/search?q=temu&sca_esv=581520105&tbas=0&tbs=qdr:w,sbd:1&tbm=nws&sxsrf=AM9HkKkXb3sBmvO6GPX6Bk-OFf-AauWLOA:1699710999318&ei=F4hPZeqGE5vf2roPk-C5sA4&start=0&sa=N&ved=2ahUKEwiq7tbyjLyCAxWbr1YBHRNwDuY4ChDx0wN6BAgCEAI&biw=1680&bih=825&dpr=2&hl=en',
+        'https://www.google.com/search?q=拼多多&sca_esv=581520105&tbas=0&tbs=qdr:w,sbd:1&tbm=nws&sxsrf=AM9HkKkXb3sBmvO6GPX6Bk-OFf-AauWLOA:1699710999318&ei=F4hPZeqGE5vf2roPk-C5sA4&start=0&sa=N&ved=2ahUKEwiq7tbyjLyCAxWbr1YBHRNwDuY4ChDx0wN6BAgCEAI&biw=1680&bih=825&dpr=2&hl=en',
     ]
 
     def parse(self, response):

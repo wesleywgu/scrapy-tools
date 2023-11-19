@@ -23,7 +23,22 @@ class twitterSpider(Spider):
     name = "search"
     allowed_domains = ["twitter.com"]
     start_urls = [
-        'https://twitter.com/search?q=%E6%8B%BC%E5%A4%9A%E5%A4%9A&src=typed_query',
+        'https://twitter.com/search?q=%23pdd&src=typed_query&f=top',
+        'https://twitter.com/search?q=%23pinduoduo&src=typed_query&f=top',
+        'https://twitter.com/search?q=%23temu&src=typed_query&f=top',
+        'https://twitter.com/search?q=%23拼多多&src=typed_query&f=top',
+        'https://twitter.com/search?q=%23pdd&src=typed_query&f=media',
+        'https://twitter.com/search?q=%23pinduoduo&src=typed_query&f=media',
+        'https://twitter.com/search?q=%23temu&src=typed_query&f=media',
+        'https://twitter.com/search?q=%23拼多多&src=typed_query&f=media',
+        'https://twitter.com/search?q=%23pdd&src=typed_query&f=live',
+        'https://twitter.com/search?q=%23pinduoduo&src=typed_query&f=live',
+        'https://twitter.com/search?q=%23temu&src=typed_query&f=live',
+        'https://twitter.com/search?q=%23拼多多&src=typed_query&f=live',
+        'https://twitter.com/search?q=pdd&src=typed_query',
+        'https://twitter.com/search?q=pinduoduo&src=typed_query',
+        'https://twitter.com/search?q=temu&src=typed_query',
+        'https://twitter.com/search?q=拼多多&src=typed_query',
     ]
 
     def start_requests(self):
@@ -55,7 +70,6 @@ class twitterSpider(Spider):
         for i in final_tweets.values():
             yield i
 
-
     def scroll_down(self, browser) -> None:
         """Helps to scroll down web page"""
         try:
@@ -85,10 +99,15 @@ class twitterSpider(Spider):
                 tweet['pub_time'] = china_time.strftime("%Y-%m-%d %H:%M:%S")
 
                 tweet['text'] = card.find_element(by=By.XPATH, value='.//div[2]/div[2]/div[1]').text.replace('\n', '')
-                tweet['post_url'] = card.find_element(by=By.XPATH,
-                                                      value='.//a[contains(@href, "/status/")]').get_attribute(
+                tweet['url'] = card.find_element(by=By.XPATH, value='.//a[contains(@href, "/status/")]').get_attribute(
                     'href')
-                tweets[tweet['post_url']] = tweet
+
+                time_now = datetime.now()
+                current_time = time_now.strftime("%Y-%m-%d %H:%M:%S")
+                tweet['craw_time'] = current_time
+                tweet['source_url'] = browser.current_url
+
+                tweets[tweet['url']] = tweet
             except:
                 pass
         return tweets

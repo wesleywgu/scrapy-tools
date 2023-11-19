@@ -11,4 +11,6 @@ class twitterItem(Item):
     user_name = Field()
     pub_time = Field()
     text = Field()
-    post_url = Field()
+    url = Field()
+    craw_time = Field()
+    source_url = Field()

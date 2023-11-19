@@ -10,13 +10,17 @@ class githubItem(Item):
     # define the fields for your item here like:
     repo_name = Field()
     desc = Field()
-    last_update = Field()
+    pub_time = Field()
     url = Field()
+    craw_time = Field()
+    source_url = Field()
 
 
 class CommitItem(Item):
     # define the fields for your item here like:
     url = Field()
     title = Field()
-    time = Field()
+    pub_time = Field()
     author = Field()
+    craw_time = Field()
+    source_url = Field()

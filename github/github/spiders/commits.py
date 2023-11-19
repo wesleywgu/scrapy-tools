@@ -35,5 +35,11 @@ class githubSpider(Spider):
             # 将UTC时间转换为中国本地时间
             china_time = utc_time.replace(tzinfo=timezone.utc).astimezone(china_timezone)
             # 格式化为指定格式的字符串
-            commit['time'] = china_time.strftime("%Y-%m-%d %H:%M:%S")
+            commit['pub_time'] = china_time.strftime("%Y-%m-%d %H:%M:%S")
+
+            time_now = datetime.now()
+            current_time = time_now.strftime("%Y-%m-%d %H:%M:%S")
+            commit['craw_time'] = current_time
+            commit['source_url'] = response.request.url
+
             yield commit
