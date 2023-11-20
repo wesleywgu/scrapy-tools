@@ -14,7 +14,7 @@ from bs4 import BeautifulSoup
 from misc.db import MySQLUtil
 
 
-class githubSpider(Spider):
+class githubSearchSpider(Spider):
     name = "search"
     allowed_domains = ["github.com"]
     # start_urls = [

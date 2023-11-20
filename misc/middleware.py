@@ -209,9 +209,7 @@ class CustomHttpProxyMiddleware(object):
 
 class LocalHttpProxyMiddleware(object):
     def process_request(self, request, spider):
-        # request.meta['proxy'] = 'http://127.0.0.1:7890'
-        request.meta['proxy'] = 'http://192.168.1.254:7890'
-
+        request.meta['proxy'] = 'http://127.0.0.1:7890'
 
 class CustomUserAgentMiddleware(object):
     def process_request(self, request, spider):

@@ -1,45 +1,56 @@
-from urllib.parse import urlparse
-
-import scrapy
-
-from github.items import CommitItem
 from datetime import datetime, timezone, timedelta
 
-from scrapy import Request
+import scrapy
+from github.items import CommitItem
 
 try:
-    from scrapy.spiders import Spider
+    from scrapy.spiders import Spider, Rule
 except:
     from scrapy.spiders import BaseSpider as Spider
 from github.items import *
 from misc.db import MySQLUtil
 
 
-class githubSpider(Spider):
+class githubCommitsSpider(Spider):
     name = "commits"
     allowed_domains = ["github.com"]
-    start_urls = [
-        "https://github.com/easychen/github-action-server-chan/commits?author=easychen&since=2023-11-31&until=2023-11-16",
-    ]
-
+    #
+    # start_urls = [
+    #     "https://github.com/easychen?tab=overview&from=2022-10-01&to=2023-10-31",
+    # ]
 
     db = MySQLUtil('192.168.1.2', 3366, 'root', 'gw201221', 'pdd')
 
     def start_requests(self):
-        self.logger.debug("execute start_requests start query sql")
-        results = self.db.execute("select channel_url from pdd_monitor_source where name='Github'")
-        self.logger.debug("execute start_requests finish query sql")
+        results = self.db.execute(
+            "select channel_url from pdd_monitor_source where name<>'Github' and channel='Github' and url_grade<>'9'")
+
         for row in results:
-            url = row[0]
+            today = datetime.now().date()
+            today_str = today.strftime("%Y-%m-%d")
+            yesterday_str = (today - timedelta(days=1)).strftime("%Y-%m-%d")
+            url = row[0] + "?tab=overview&from={from_date}&to={to_date}".format(from_date=yesterday_str,
+                                                                                to_date=today_str)
             self.logger.debug(url)
-            yield Request(url=url, callback=self.parse)
+            yield scrapy.Request(url=url, callback=self.parse_link_urls)
+
+    def parse_link_urls(self, response):
+        cards = response.css('li.ml-0.py-1.d-flex')
+        for card in cards:
+            url = card.xpath('.//div/a[2]/@href').get()
+            url = 'https://github.com' + url
+            yield scrapy.Request(url=url, callback=self.parse)
 
     def parse(self, response):
         cards = response.xpath('//*[@id="repo-content-pjax-container"]/div/div[3]/div')
         for card in cards:
             commit = CommitItem()
-            commit['url'] = 'https://github.com/' + card.xpath('./div[2]/ol/li[1]/div[1]/p/a[3]/@href').get()
-            commit['title'] = card.css('p.mb-1 a:nth-of-type(3)::text').get()
+            url = card.xpath('./div[2]/ol/li[1]/div[1]/p/a[3]/@href').get()
+            if not url:
+                url = card.xpath('./div[2]/ol/li/div[1]/p/a/@href').get()
+            commit['url'] = 'https://github.com' + url
+
+            commit['title'] = card.css('p.mb-1 a::text').get()
             commit['author'] = card.css('a.commit-author.user-mention::text').get()
 
             utc_time_str = card.xpath('//relative-time/@datetime').get()

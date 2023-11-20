@@ -23,14 +23,14 @@ NEWSPIDER_MODULE = 'github.spiders'
 # USER_AGENT = 'github (+http://www.yourdomain.com)'
 
 DOWNLOADER_MIDDLEWARES = {
-    # 'misc.middleware.LocalHttpProxyMiddleware': 400,
+    'misc.middleware.LocalHttpProxyMiddleware': 400,
     'misc.middleware.CustomUserAgentMiddleware': 401,
 }
 
 ITEM_PIPELINES = {
     # 'github.pipelines.JsonWithEncodingPipeline': 300,
     # 'github.pipelines.RedisPipeline': 301,
-    'crawlab.CrawlabPipeline': 300,
+    # 'crawlab.CrawlabPipeline': 300,
 }
 
 LOG_LEVEL = 'DEBUG'
