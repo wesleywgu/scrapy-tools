@@ -16,7 +16,7 @@ try:
 except:
     from scrapy.spiders import BaseSpider as Spider
 
-from misc.Requests import SeleniumRequest
+from misc.requests import SeleniumRequest
 
 
 class twitterSpider(Spider):

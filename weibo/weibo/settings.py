@@ -36,6 +36,8 @@ ITEM_PIPELINES = {
 
 LOG_LEVEL = 'DEBUG'
 COOKIES_ENABLED = False
+LOG_STDOUT = True
+ROBOTSTXT_OBEY = False
 DOWNLOAD_DELAY = 10
 
 #############################################################

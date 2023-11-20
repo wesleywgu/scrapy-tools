@@ -5,7 +5,7 @@ from time import sleep
 sys.path.append(os.getcwd())
 from .proxy import PROXIES, FREE_PROXIES
 from .agents import AGENTS
-from .Requests import SeleniumRequest
+from .requests import SeleniumRequest
 import logging as log
 
 import random
@@ -115,7 +115,7 @@ class SeleniumMiddleware:
             is_login = self.driver.get_cookie('is_login')
             if not is_login:
                 self.driver.get(request.url)
-                sleep(10)
+                sleep(20)
 
                 # 手动设置cookie
                 for cookie_name, cookie_value in request.cookies.items():
@@ -209,7 +209,8 @@ class CustomHttpProxyMiddleware(object):
 
 class LocalHttpProxyMiddleware(object):
     def process_request(self, request, spider):
-        request.meta['proxy'] = 'http://127.0.0.1:7890'
+        # request.meta['proxy'] = 'http://127.0.0.1:7890'
+        request.meta['proxy'] = 'http://192.168.1.254:7890'
 
 
 class CustomUserAgentMiddleware(object):

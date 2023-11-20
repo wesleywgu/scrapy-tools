@@ -19,16 +19,33 @@ try:
 except:
     from scrapy.spiders import BaseSpider as Spider
 
+import misc.log as log
+from misc.db import MySQLUtil
+
 
 class baiduSpider(Spider):
     name = "news"
     allowed_domains = ["baidu.com"]
+    db = MySQLUtil('192.168.1.2', 3366, 'root', 'gw201221', 'pdd')
+
     start_urls = [
         "https://www.baidu.com/s?tn=news&rtt=4&bsst=1&cl=2&wd=pdd&medium=0&pn=0",
         "https://www.baidu.com/s?tn=news&rtt=4&bsst=1&cl=2&wd=pinduoduo&medium=0&pn=0",
         "https://www.baidu.com/s?tn=news&rtt=4&bsst=1&cl=2&wd=temu&medium=0&pn=0",
         "https://www.baidu.com/s?tn=news&rtt=4&bsst=1&cl=2&wd=拼多多&medium=0&pn=0",
     ]
+
+    # def start_requests(self):
+    #     print('start_requests')
+    #     results = self.db.execute("select channel_url from pdd_monitor_source where name='百度'")
+    #     print(results)
+    #     for row in results:
+    #         print('url: ' + row[0])
+    #         url = row[0]
+    #         yield Request(url=url, callback=self.parse)
+
+    def closed(self, spider):
+        self.db.close()
 
     def parse(self, response):
         result = self.parse_news(response.text)

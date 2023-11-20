@@ -1,6 +1,6 @@
 import scrapy
 
-from google.items import googleItem
+from google_news.items import googleItem
 
 try:
     from scrapy.spiders import Spider
@@ -14,7 +14,7 @@ from urllib.parse import urlparse, urlunparse, parse_qs, urlencode
 
 
 class googleSpider(Spider):
-    name = "news"
+    name = "search"
     allowed_domains = ["google.com"]
     start_urls = [
         'https://www.google.com/search?q=pdd&sca_esv=581520105&tbas=0&tbs=qdr:w,sbd:1&tbm=nws&sxsrf=AM9HkKkXb3sBmvO6GPX6Bk-OFf-AauWLOA:1699710999318&ei=F4hPZeqGE5vf2roPk-C5sA4&start=0&sa=N&ved=2ahUKEwiq7tbyjLyCAxWbr1YBHRNwDuY4ChDx0wN6BAgCEAI&biw=1680&bih=825&dpr=2&hl=en',
