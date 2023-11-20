@@ -28,21 +28,21 @@ class baiduSpider(Spider):
     allowed_domains = ["baidu.com"]
     db = MySQLUtil('192.168.1.2', 3366, 'root', 'gw201221', 'pdd')
 
-    start_urls = [
-        "https://www.baidu.com/s?tn=news&rtt=4&bsst=1&cl=2&wd=pdd&medium=0&pn=0",
-        "https://www.baidu.com/s?tn=news&rtt=4&bsst=1&cl=2&wd=pinduoduo&medium=0&pn=0",
-        "https://www.baidu.com/s?tn=news&rtt=4&bsst=1&cl=2&wd=temu&medium=0&pn=0",
-        "https://www.baidu.com/s?tn=news&rtt=4&bsst=1&cl=2&wd=拼多多&medium=0&pn=0",
-    ]
+    # start_urls = [
+    #     "https://www.baidu.com/s?tn=news&rtt=4&bsst=1&cl=2&wd=pdd&medium=0&pn=0",
+    #     "https://www.baidu.com/s?tn=news&rtt=4&bsst=1&cl=2&wd=pinduoduo&medium=0&pn=0",
+    #     "https://www.baidu.com/s?tn=news&rtt=4&bsst=1&cl=2&wd=temu&medium=0&pn=0",
+    #     "https://www.baidu.com/s?tn=news&rtt=4&bsst=1&cl=2&wd=拼多多&medium=0&pn=0",
+    # ]
 
-    # def start_requests(self):
-    #     print('start_requests')
-    #     results = self.db.execute("select channel_url from pdd_monitor_source where name='百度'")
-    #     print(results)
-    #     for row in results:
-    #         print('url: ' + row[0])
-    #         url = row[0]
-    #         yield Request(url=url, callback=self.parse)
+    def start_requests(self):
+        self.logger.debug("execute start_requests start query sql")
+        results = self.db.execute("select channel_url from pdd_monitor_source where name='百度'")
+        self.logger.debug("execute start_requests finish query sql")
+        for row in results:
+            url = row[0]
+            self.logger.debug(url)
+            yield Request(url=url, callback=self.parse)
 
     def closed(self, spider):
         self.db.close()
@@ -57,7 +57,7 @@ class baiduSpider(Spider):
             if news['date']:
                 i['pub_time'] = self.convert_time(news['date']).strftime("%Y-%m-%d %H:%M:%S")
             else:
-                i['pub_time'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                i['pub_time'] = '无'
             i['desc'] = news['des']
             i['url'] = news['url']
             i['title'] = news['title']
@@ -71,7 +71,10 @@ class baiduSpider(Spider):
         # 下一页
         current_url = response.request.url
         query_dict = parse_qs(urlparse(current_url).query)
-        start_num = int(query_dict['pn'][0])
+        if 'pn' in query_dict:
+            start_num = int(query_dict['pn'][0])
+        else:
+            start_num = 0
         total = min(5, total)
         current_page = int(start_num / 10) + 1
         if current_page < total:

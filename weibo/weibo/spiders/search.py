@@ -4,6 +4,7 @@ from datetime import datetime
 
 import requests
 import scrapy
+from scrapy import Request
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -16,22 +17,34 @@ from items import WeiboDisplayItem
 from utils import util
 from scrapy.exceptions import CloseSpider
 from urllib.parse import urlparse
+from misc.db import MySQLUtil
 
 
 class weibo_searchSpider(Spider):
     name = "search"
     allowed_domains = ["s.weibo.com"]
     base_url = 'https://s.weibo.com'
-    start_urls = [
-        'https://s.weibo.com/realtime?q=pdd&rd=realtime&tw=realtime&Refer=weibo_realtime',
-        # 'https://s.weibo.com/realtime?q=pinduoduo&rd=realtime&tw=realtime&Refer=weibo_realtime',
-        # 'https://s.weibo.com/realtime?q=temu&rd=realtime&tw=realtime&Refer=weibo_realtime',
-        # 'https://s.weibo.com/realtime?q=拼多多&rd=realtime&tw=realtime&Refer=weibo_realtime',
-        # 'https://m.weibo.cn/search?containerid=100103type%3D1%26q%3D%23pdd%23',
-        # 'https://m.weibo.cn/search?containerid=100103type%3D1%26q%3D%23pinduoduo%23',
-        # 'https://m.weibo.cn/search?containerid=100103type%3D1%26q%3D%23temu%23',
-        # 'https://m.weibo.cn/search?containerid=100103type%3D1%26q%3D%23拼多多%23',
-    ]
+    # start_urls = [
+    #     'https://s.weibo.com/realtime?q=pdd&rd=realtime&tw=realtime&Refer=weibo_realtime',
+    #     # 'https://s.weibo.com/realtime?q=pinduoduo&rd=realtime&tw=realtime&Refer=weibo_realtime',
+    #     # 'https://s.weibo.com/realtime?q=temu&rd=realtime&tw=realtime&Refer=weibo_realtime',
+    #     # 'https://s.weibo.com/realtime?q=拼多多&rd=realtime&tw=realtime&Refer=weibo_realtime',
+    #     # 'https://m.weibo.cn/search?containerid=100103type%3D1%26q%3D%23pdd%23',
+    #     # 'https://m.weibo.cn/search?containerid=100103type%3D1%26q%3D%23pinduoduo%23',
+    #     # 'https://m.weibo.cn/search?containerid=100103type%3D1%26q%3D%23temu%23',
+    #     # 'https://m.weibo.cn/search?containerid=100103type%3D1%26q%3D%23拼多多%23',
+    # ]
+
+    db = MySQLUtil('192.168.1.2', 3366, 'root', 'gw201221', 'pdd')
+
+    def start_requests(self):
+        self.logger.debug("execute start_requests start query sql")
+        results = self.db.execute("select channel_url from pdd_monitor_source where name='新浪微博'")
+        self.logger.debug("execute start_requests finish query sql")
+        for row in results:
+            url = row[0]
+            self.logger.debug(url)
+            yield Request(url=url, callback=self.parse)
 
     def parse(self, response):
         """解析搜索结果的信息"""

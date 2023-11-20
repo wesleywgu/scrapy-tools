@@ -31,14 +31,13 @@ DOWNLOADER_MIDDLEWARES = {
 }
 
 ITEM_PIPELINES = {
-    'twitter.pipelines.JsonWithEncodingPipeline': 300,
+    # 'twitter.pipelines.JsonWithEncodingPipeline': 300,
     # 'twitter.pipelines.RedisPipeline': 301,
-    # 'crawlab.CrawlabPipeline': 300,
+    'crawlab.CrawlabPipeline': 300,
 }
 
 LOG_LEVEL = 'DEBUG'
 # COOKIES_ENABLED = False
-LOG_LEVEL = 'DEBUG'
 LOG_STDOUT = True
 ROBOTSTXT_OBEY = False
 DOWNLOAD_DELAY = 10
@@ -46,9 +45,9 @@ DOWNLOAD_DELAY = 10
 SELENIUM_DRIVER_NAME = 'chrome'
 SELENIUM_DRIVER_EXECUTABLE_PATH = which('chromedriver')
 SELENIUM_DRIVER_ARGUMENTS = [
-    # '--headless',
+    '--headless',
     '--no-sandbox',
     '--disable-dev-shm-usage',
-    '--proxy-server=%s' % '127.0.0.1:7890',
+    # '--proxy-server=%s' % '127.0.0.1:7890',
     '--user-agent=%s' % 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.50 Safari/537.36'
 ]

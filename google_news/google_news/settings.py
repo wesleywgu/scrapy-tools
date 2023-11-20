@@ -22,7 +22,7 @@ NEWSPIDER_MODULE = 'google_news.spiders'
 # USER_AGENT = 'google_news (+http://www.yourdomain.com)'
 
 DOWNLOADER_MIDDLEWARES = {
-    'misc.middleware.LocalHttpProxyMiddleware': 400,
+    # 'misc.middleware.LocalHttpProxyMiddleware': 400,
     'misc.middleware.GoogleUserAgentMiddleware': 401,
 }
 

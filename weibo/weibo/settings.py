@@ -31,7 +31,7 @@ DOWNLOADER_MIDDLEWARES = {
 ITEM_PIPELINES = {
     'weibo.pipelines.JsonWithEncodingPipeline': 300,
     # 'weibo.pipelines.RedisPipeline': 301,
-    # 'crawlab.CrawlabPipeline': 300,
+    'crawlab.CrawlabPipeline': 300,
 }
 
 LOG_LEVEL = 'DEBUG'

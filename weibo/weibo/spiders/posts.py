@@ -6,6 +6,7 @@ from collections import OrderedDict
 from urllib.parse import urlparse, urlunparse, parse_qs, urlencode
 
 import requests
+from scrapy import Request
 from urllib3.exceptions import InsecureRequestWarning
 
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
@@ -18,17 +19,34 @@ from lxml import etree
 
 from items import WeiboItem
 from items import WeiboDisplayItem
+from misc.db import MySQLUtil
 
 
 class UserPostsSpider(scrapy.Spider):
     name = "posts"
     allowed_domains = ["weibo.cn"]
-    start_urls = [
-        "https://m.weibo.cn/api/container/getIndex?container_ext=profile_uid:1669879400&page_type=searchall&containerid=2304131669879400&page=1"
-    ]
+    # start_urls = [
+    #     "https://m.weibo.cn/api/container/getIndex?container_ext=profile_uid:3285381094&page_type=searchall&containerid=2304133285381094&page=1"
+    # ]
+
+    url_template = "https://m.weibo.cn/api/container/getIndex?container_ext=profile_uid:{uid}&page_type=searchall&containerid=230413{uid}&page=1"
 
     # 日期时间格式
     DTFORMAT = "%Y-%m-%dT%H:%M:%S"
+
+    db = MySQLUtil('192.168.1.2', 3366, 'root', 'gw201221', 'pdd')
+
+    def start_requests(self):
+        self.logger.debug("execute start_requests start query sql")
+        results = self.db.execute(
+            "select channel_url from pdd_monitor_source where url_grade <> '9' and channel_url like '%https://weibo.com/u%'")
+        self.logger.debug("execute start_requests finish query sql")
+        for row in results:
+            url = row[0]
+            uid = url.split('/')[-1]
+            new_url = self.url_template.format(uid=uid)
+            self.logger.debug("old={url}, new_url={new_url}".format(url=url, new_url=new_url))
+            yield Request(url=new_url, callback=self.parse)
 
     def parse(self, response):
         weibos = self.get_one_page(response)
@@ -38,6 +56,11 @@ class UserPostsSpider(scrapy.Spider):
             i['post_url'] = weibo['post_url']
             i['screen_name'] = weibo['screen_name']
             i['text'] = weibo['text']
+
+            time_now = datetime.now()
+            current_time = time_now.strftime("%Y-%m-%d %H:%M:%S")
+            i['craw_time'] = current_time
+            i['source_url'] = response.request.url
             yield i
 
         # 下一页
@@ -215,21 +238,21 @@ class UserPostsSpider(scrapy.Spider):
         full_created_at = ts.strftime("%Y-%m-%d %H:%M:%S")
         return created_at, full_created_at
 
-    def standardize_info(self, weibo):
-        """标准化信息，去除乱码"""
-        for k, v in weibo.items():
-            if (
-                    "bool" not in str(type(v))
-                    and "int" not in str(type(v))
-                    and "list" not in str(type(v))
-                    and "long" not in str(type(v))
-            ):
-                weibo[k] = (
-                    v.replace("\u200b", "")
-                    .encode(sys.stdout.encoding, "ignore")
-                    .decode(sys.stdout.encoding)
-                )
-        return weibo
+    # def standardize_info(self, weibo):
+    #     """标准化信息，去除乱码"""
+    #     for k, v in weibo.items():
+    #         if (
+    #                 "bool" not in str(type(v))
+    #                 and "int" not in str(type(v))
+    #                 and "list" not in str(type(v))
+    #                 and "long" not in str(type(v))
+    #         ):
+    #             weibo[k] = (
+    #                 v.replace("\u200b", "")
+    #                 .encode(sys.stdout.encoding, "ignore")
+    #                 .decode(sys.stdout.encoding)
+    #             )
+    #     return weibo
 
     def get_json(self, params):
         """获取网页中json数据"""
@@ -342,7 +365,8 @@ class UserPostsSpider(scrapy.Spider):
         weibo["reposts_count"] = self.string_to_int(weibo_info.get("reposts_count", 0))
         weibo["topics"] = self.get_topics(selector)
         weibo["at_users"] = self.get_at_users(selector)
-        return self.standardize_info(weibo)
+        # return self.standardize_info(weibo)
+        return weibo
 
     def get_one_weibo(self, info):
         """获取一条微博的全部信息"""

@@ -2,6 +2,7 @@ from urllib.parse import urlparse
 from datetime import datetime, timezone, timedelta
 
 import scrapy
+from scrapy import Request
 
 try:
     from scrapy.spiders import Spider
@@ -10,16 +11,30 @@ except:
 from github.items import *
 from bs4 import BeautifulSoup
 
+from misc.db import MySQLUtil
+
 
 class githubSpider(Spider):
     name = "search"
     allowed_domains = ["github.com"]
-    start_urls = [
-        'https://github.com/search?q=pdd&type=repositories&s=updated&o=desc',
-        'https://github.com/search?q=pinduoduo&type=repositories&s=updated&o=desc',
-        'https://github.com/search?q=temu&type=repositories&s=updated&o=desc',
-        'https://github.com/search?q=拼多多&type=repositories&s=updated&o=desc',
-    ]
+    # start_urls = [
+    #     'https://github.com/search?q=pdd&type=repositories&s=updated&o=desc',
+    #     'https://github.com/search?q=pinduoduo&type=repositories&s=updated&o=desc',
+    #     'https://github.com/search?q=temu&type=repositories&s=updated&o=desc',
+    #     'https://github.com/search?q=拼多多&type=repositories&s=updated&o=desc',
+    # ]
+
+
+    db = MySQLUtil('192.168.1.2', 3366, 'root', 'gw201221', 'pdd')
+
+    def start_requests(self):
+        self.logger.debug("execute start_requests start query sql")
+        results = self.db.execute("select channel_url from pdd_monitor_source where name='Github'")
+        self.logger.debug("execute start_requests finish query sql")
+        for row in results:
+            url = row[0]
+            self.logger.debug(url)
+            yield Request(url=url, callback=self.parse)
 
     def parse(self, response):
         cards = response.css('div.Box-sc-g0xbh4-0.jUbAHB')

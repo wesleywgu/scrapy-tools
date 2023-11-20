@@ -11,6 +11,8 @@ from twitter.items import twitterItem
 from selenium.webdriver import ActionChains, Keys
 from datetime import datetime, timezone, timedelta
 
+from misc.db import MySQLUtil
+
 try:
     from scrapy.spiders import Spider
 except:
@@ -22,9 +24,10 @@ from misc.requests import SeleniumRequest
 class twitterSpider(Spider):
     name = "posts"
     allowed_domains = ["twitter.com"]
-    start_urls = [
-        'https://twitter.com/oldamnnt',
-    ]
+    # start_urls = [
+    #     'https://twitter.com/oldamnnt',
+    # ]
+    db = MySQLUtil('192.168.1.2', 3366, 'root', 'gw201221', 'pdd')
 
     def start_requests(self):
         cookie = 'guest_id=v1%3A169968367202280499;g_state={"i_l":0};att=1-dzYe81dA9PL6dptTn3sZpKUJk31cu6339OVFBLgO;_ga=GA1.2.1319796421.1699597109;_gid=GA1.2.2130692126.1699597109;_twitter_sess=BAh7CSIKZmxhc2hJQzonQWN0aW9uQ29udHJvbGxlcjo6Rmxhc2g6OkZsYXNo%250ASGFzaHsABjoKQHVzZWR7ADoPY3JlYXRlZF9hdGwrCIilCr2LAToMY3NyZl9p%250AZCIlOGVhNmZiZjUxYmE4YTE3OTRkZDE5NTY2ZmFhZjNlY2E6B2lkIiVkZjYz%250AMjJhMmE2NTY1YWNmZWYxZWRhNGNhZDYzMDZkMg%253D%253D--24df1129995c212d72d70c6d6bf5a727e95e8b2a;auth_token=efe92a784d7aa0d935a4e165ec4c3bab101b8076;ct0=fb069b093d3e476ea39a67904407e8ee28797b2b676f1893ff58ec4f42f2484e3231ad7f447cb068fbd82d5c5dc8e9752c8f553ef467dc9d97e0d7a7db83d0a370e5508af6e25d83dbb3f8e9c38a3297;external_referer=8e8t2xd8A2w%3D|0|GlWr2u5wzZipnVja1ZbglPkPMjOgQE2KgmAMWWfTCXhp0%2FHSfkOhmd2TJyvExtBN%2F%2Fijlay3pIcy7kTdifa%2FvLWqgGPAyxd2cO5nc7nz8Hg%3D;gt=1723231481634697629;guest_id_ads=v1%3A169968367202280499;guest_id_marketing=v1%3A169968367202280499;kdt=23e1xveFWder6tur8CAqZUHOSvgOXpLHYvAeYXjw;lang=en;personalization_id="v1_+0NoU2o1Kh26meEnQAjj+w==";twid=u%3D1405533540540813314'
@@ -35,7 +38,13 @@ class twitterSpider(Spider):
             value = cookie_pair.split('=')[1]
             cookie_dict[key] = value
 
-        for url in self.start_urls:
+        self.logger.debug("execute start_requests start query sql")
+        results = self.db.execute(
+            "select channel_url from pdd_monitor_source where channel='Twitter' and name <> 'Twitter' and url_grade <> '9'")
+        self.logger.debug("execute start_requests finish query sql")
+        for row in results:
+            url = row[0]
+            self.logger.debug(url)
             yield SeleniumRequest(url=url, callback=self.parse_result, cookies=cookie_dict)
 
     def parse_result(self, response):
@@ -87,7 +96,8 @@ class twitterSpider(Spider):
                 for i in text_parts:
                     tweet['text'] = tweet['text'] + i.text
 
-                tweet['url'] = card.find_element(by=By.XPATH,value='.//a[contains(@href, "/status/")]').get_attribute('href')
+                tweet['url'] = card.find_element(by=By.XPATH, value='.//a[contains(@href, "/status/")]').get_attribute(
+                    'href')
 
                 time_now = datetime.now()
                 current_time = time_now.strftime("%Y-%m-%d %H:%M:%S")

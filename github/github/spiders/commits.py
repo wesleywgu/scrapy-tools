@@ -5,11 +5,14 @@ import scrapy
 from github.items import CommitItem
 from datetime import datetime, timezone, timedelta
 
+from scrapy import Request
+
 try:
     from scrapy.spiders import Spider
 except:
     from scrapy.spiders import BaseSpider as Spider
 from github.items import *
+from misc.db import MySQLUtil
 
 
 class githubSpider(Spider):
@@ -18,6 +21,18 @@ class githubSpider(Spider):
     start_urls = [
         "https://github.com/easychen/github-action-server-chan/commits?author=easychen&since=2023-11-31&until=2023-11-16",
     ]
+
+
+    db = MySQLUtil('192.168.1.2', 3366, 'root', 'gw201221', 'pdd')
+
+    def start_requests(self):
+        self.logger.debug("execute start_requests start query sql")
+        results = self.db.execute("select channel_url from pdd_monitor_source where name='Github'")
+        self.logger.debug("execute start_requests finish query sql")
+        for row in results:
+            url = row[0]
+            self.logger.debug(url)
+            yield Request(url=url, callback=self.parse)
 
     def parse(self, response):
         cards = response.xpath('//*[@id="repo-content-pjax-container"]/div/div[3]/div')

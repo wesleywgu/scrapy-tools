@@ -1,6 +1,7 @@
 import scrapy
 
 from google_news.items import googleItem
+from scrapy import Request
 
 try:
     from scrapy.spiders import Spider
@@ -12,16 +13,30 @@ import datetime
 from dateutil.relativedelta import relativedelta
 from urllib.parse import urlparse, urlunparse, parse_qs, urlencode
 
+from misc.db import MySQLUtil
+
 
 class googleSpider(Spider):
     name = "search"
     allowed_domains = ["google.com"]
-    start_urls = [
-        'https://www.google.com/search?q=pdd&sca_esv=581520105&tbas=0&tbs=qdr:w,sbd:1&tbm=nws&sxsrf=AM9HkKkXb3sBmvO6GPX6Bk-OFf-AauWLOA:1699710999318&ei=F4hPZeqGE5vf2roPk-C5sA4&start=0&sa=N&ved=2ahUKEwiq7tbyjLyCAxWbr1YBHRNwDuY4ChDx0wN6BAgCEAI&biw=1680&bih=825&dpr=2&hl=en',
-        'https://www.google.com/search?q=pinduoduo&sca_esv=581520105&tbas=0&tbs=qdr:w,sbd:1&tbm=nws&sxsrf=AM9HkKkXb3sBmvO6GPX6Bk-OFf-AauWLOA:1699710999318&ei=F4hPZeqGE5vf2roPk-C5sA4&start=0&sa=N&ved=2ahUKEwiq7tbyjLyCAxWbr1YBHRNwDuY4ChDx0wN6BAgCEAI&biw=1680&bih=825&dpr=2&hl=en',
-        'https://www.google.com/search?q=temu&sca_esv=581520105&tbas=0&tbs=qdr:w,sbd:1&tbm=nws&sxsrf=AM9HkKkXb3sBmvO6GPX6Bk-OFf-AauWLOA:1699710999318&ei=F4hPZeqGE5vf2roPk-C5sA4&start=0&sa=N&ved=2ahUKEwiq7tbyjLyCAxWbr1YBHRNwDuY4ChDx0wN6BAgCEAI&biw=1680&bih=825&dpr=2&hl=en',
-        'https://www.google.com/search?q=拼多多&sca_esv=581520105&tbas=0&tbs=qdr:w,sbd:1&tbm=nws&sxsrf=AM9HkKkXb3sBmvO6GPX6Bk-OFf-AauWLOA:1699710999318&ei=F4hPZeqGE5vf2roPk-C5sA4&start=0&sa=N&ved=2ahUKEwiq7tbyjLyCAxWbr1YBHRNwDuY4ChDx0wN6BAgCEAI&biw=1680&bih=825&dpr=2&hl=en',
-    ]
+    # start_urls = [
+    #     'https://www.google.com/search?q=pdd&sca_esv=581520105&tbas=0&tbs=qdr:w,sbd:1&tbm=nws&sxsrf=AM9HkKkXb3sBmvO6GPX6Bk-OFf-AauWLOA:1699710999318&ei=F4hPZeqGE5vf2roPk-C5sA4&start=0&sa=N&ved=2ahUKEwiq7tbyjLyCAxWbr1YBHRNwDuY4ChDx0wN6BAgCEAI&biw=1680&bih=825&dpr=2&hl=en',
+    #     'https://www.google.com/search?q=pinduoduo&sca_esv=581520105&tbas=0&tbs=qdr:w,sbd:1&tbm=nws&sxsrf=AM9HkKkXb3sBmvO6GPX6Bk-OFf-AauWLOA:1699710999318&ei=F4hPZeqGE5vf2roPk-C5sA4&start=0&sa=N&ved=2ahUKEwiq7tbyjLyCAxWbr1YBHRNwDuY4ChDx0wN6BAgCEAI&biw=1680&bih=825&dpr=2&hl=en',
+    #     'https://www.google.com/search?q=temu&sca_esv=581520105&tbas=0&tbs=qdr:w,sbd:1&tbm=nws&sxsrf=AM9HkKkXb3sBmvO6GPX6Bk-OFf-AauWLOA:1699710999318&ei=F4hPZeqGE5vf2roPk-C5sA4&start=0&sa=N&ved=2ahUKEwiq7tbyjLyCAxWbr1YBHRNwDuY4ChDx0wN6BAgCEAI&biw=1680&bih=825&dpr=2&hl=en',
+    #     'https://www.google.com/search?q=拼多多&sca_esv=581520105&tbas=0&tbs=qdr:w,sbd:1&tbm=nws&sxsrf=AM9HkKkXb3sBmvO6GPX6Bk-OFf-AauWLOA:1699710999318&ei=F4hPZeqGE5vf2roPk-C5sA4&start=0&sa=N&ved=2ahUKEwiq7tbyjLyCAxWbr1YBHRNwDuY4ChDx0wN6BAgCEAI&biw=1680&bih=825&dpr=2&hl=en',
+    # ]
+
+    db = MySQLUtil('192.168.1.2', 3366, 'root', 'gw201221', 'pdd')
+
+    def start_requests(self):
+        self.logger.debug("execute start_requests start query sql")
+        results = self.db.execute(
+            "select channel_url from pdd_monitor_source where name='Google'")
+        self.logger.debug("execute start_requests finish query sql")
+        for row in results:
+            url = row[0]
+            self.logger.debug(url)
+            yield Request(url=url, callback=self.parse)
 
     def parse(self, response):
         news_list = self.build_response(response)
@@ -88,7 +103,6 @@ class googleSpider(Spider):
             except Exception:
                 tmp_date = ''
                 tmp_datetime = None
-
 
             results.append(
                 {
