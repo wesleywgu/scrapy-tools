@@ -62,8 +62,7 @@ class githubSearchSpider(Spider):
             repo_name = url.strip('/')
 
             i = githubItem()
-            i['repo_name'] = repo_name
-            i['desc'] = desc
+            i['content'] = repo_name + ' ## ' + desc
             i['pub_time'] = last_update
             i['url'] = 'https://github.com' + url
 

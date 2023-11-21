@@ -18,12 +18,14 @@ from utils import util
 from scrapy.exceptions import CloseSpider
 from urllib.parse import urlparse
 from misc.db import MySQLUtil
+from scrapy.utils.project import get_project_settings
 
 
 class weibo_searchSpider(Spider):
     name = "search"
     allowed_domains = ["s.weibo.com"]
     base_url = 'https://s.weibo.com'
+    env = get_project_settings()['MACHINE_ENV']
 
     def start_requests(self):
         if self.env == 'online':
