@@ -21,29 +21,34 @@ except:
 
 import misc.log as log
 from misc.db import MySQLUtil
+from scrapy.utils.project import get_project_settings
 
 
 class baiduSpider(Spider):
     name = "news"
     allowed_domains = ["baidu.com"]
-
-    # start_urls = [
-    #     "https://www.baidu.com/s?tn=news&rtt=4&bsst=1&cl=2&wd=pdd&medium=0&pn=0",
-    #     "https://www.baidu.com/s?tn=news&rtt=4&bsst=1&cl=2&wd=pinduoduo&medium=0&pn=0",
-    #     "https://www.baidu.com/s?tn=news&rtt=4&bsst=1&cl=2&wd=temu&medium=0&pn=0",
-    #     "https://www.baidu.com/s?tn=news&rtt=4&bsst=1&cl=2&wd=拼多多&medium=0&pn=0",
-    # ]
-
-    db = MySQLUtil('192.168.1.2', 3366, 'root', 'gw201221', 'pdd')
+    env = get_project_settings()['MACHINE_ENV']
 
     def start_requests(self):
-        self.logger.info("execute start_requests start query sql")
-        results = self.db.execute("select channel_url from pdd_monitor_source where name='百度'")
-        self.logger.info("execute start_requests finish query sql")
-        for row in results:
-            url = row[0]
-            self.logger.info(url)
-            yield Request(url=url, callback=self.parse)
+        if self.env == 'online':
+            db = MySQLUtil('192.168.1.2', 3366, 'root', 'gw201221', 'pdd')
+            self.logger.info("execute start_requests start query sql")
+            results = db.execute("select channel_url from pdd_monitor_source where name='百度'")
+            self.logger.info("execute start_requests finish query sql")
+            for row in results:
+                url = row[0]
+                self.logger.info(url)
+                yield Request(url=url, callback=self.parse)
+        else:
+            urls = [
+                "https://www.baidu.com/s?tn=news&rtt=4&bsst=1&cl=2&wd=%E6%8B%BC%E5%A4%9A%E5%A4%9A%20%E9%9A%90%E7%A7%81&medium=0&pn=0",
+                # "https://www.baidu.com/s?tn=news&rtt=4&bsst=1&cl=2&wd=pdd&medium=0&pn=0",
+                # "https://www.baidu.com/s?tn=news&rtt=4&bsst=1&cl=2&wd=pinduoduo&medium=0&pn=0",
+                # "https://www.baidu.com/s?tn=news&rtt=4&bsst=1&cl=2&wd=temu&medium=0&pn=0",
+                # "https://www.baidu.com/s?tn=news&rtt=4&bsst=1&cl=2&wd=拼多多&medium=0&pn=0",
+            ]
+            for url in urls:
+                yield Request(url=url, callback=self.parse)
 
     def parse(self, response):
         result = self.parse_news(response.text)
@@ -209,6 +214,11 @@ class baiduSpider(Spider):
         # elif '年' in t:
         #     s = (datetime.now() - timedelta(days=365 * delta))
         elif "年" in t and "月" in t and "日" in t:
+            s = datetime.strptime(t, r"%Y年%m月%d日")
+        elif "月" in t and "日" in t:
+            today = datetime.today()
+            year = str(today.year)
+            t = year + '年' + t
             s = datetime.strptime(t, r"%Y年%m月%d日")
         else:
             s = datetime.now()

@@ -35,7 +35,7 @@ class WeiboItem(scrapy.Item):
 
 class WeiboDisplayItem(scrapy.Item):
     # define the fields for your item here like:
-    post_url = scrapy.Field()
+    url = scrapy.Field()
     screen_name = scrapy.Field()
     text = scrapy.Field()
     pub_time = scrapy.Field()

@@ -24,27 +24,30 @@ class weibo_searchSpider(Spider):
     name = "search"
     allowed_domains = ["s.weibo.com"]
     base_url = 'https://s.weibo.com'
-    # start_urls = [
-    #     'https://s.weibo.com/realtime?q=pdd&rd=realtime&tw=realtime&Refer=weibo_realtime',
-    #     # 'https://s.weibo.com/realtime?q=pinduoduo&rd=realtime&tw=realtime&Refer=weibo_realtime',
-    #     # 'https://s.weibo.com/realtime?q=temu&rd=realtime&tw=realtime&Refer=weibo_realtime',
-    #     # 'https://s.weibo.com/realtime?q=拼多多&rd=realtime&tw=realtime&Refer=weibo_realtime',
-    #     # 'https://m.weibo.cn/search?containerid=100103type%3D1%26q%3D%23pdd%23',
-    #     # 'https://m.weibo.cn/search?containerid=100103type%3D1%26q%3D%23pinduoduo%23',
-    #     # 'https://m.weibo.cn/search?containerid=100103type%3D1%26q%3D%23temu%23',
-    #     # 'https://m.weibo.cn/search?containerid=100103type%3D1%26q%3D%23拼多多%23',
-    # ]
-
-    db = MySQLUtil('192.168.1.2', 3366, 'root', 'gw201221', 'pdd')
 
     def start_requests(self):
-        self.logger.debug("execute start_requests start query sql")
-        results = self.db.execute("select channel_url from pdd_monitor_source where name='新浪微博'")
-        self.logger.debug("execute start_requests finish query sql")
-        for row in results:
-            url = row[0]
-            self.logger.debug(url)
-            yield Request(url=url, callback=self.parse)
+        if self.env == 'online':
+            db = MySQLUtil('192.168.1.2', 3366, 'root', 'gw201221', 'pdd')
+            self.logger.debug("execute start_requests start query sql")
+            results = db.execute("select channel_url from pdd_monitor_source where name='新浪微博'")
+            self.logger.debug("execute start_requests finish query sql")
+            for row in results:
+                url = row[0]
+                self.logger.debug(url)
+                yield Request(url=url, callback=self.parse)
+        else:
+            urls = [
+                'https://s.weibo.com/realtime?q=pdd&rd=realtime&tw=realtime&Refer=weibo_realtime',
+                # 'https://s.weibo.com/realtime?q=pinduoduo&rd=realtime&tw=realtime&Refer=weibo_realtime',
+                # 'https://s.weibo.com/realtime?q=temu&rd=realtime&tw=realtime&Refer=weibo_realtime',
+                # 'https://s.weibo.com/realtime?q=拼多多&rd=realtime&tw=realtime&Refer=weibo_realtime',
+                # 'https://m.weibo.cn/search?containerid=100103type%3D1%26q%3D%23pdd%23',
+                # 'https://m.weibo.cn/search?containerid=100103type%3D1%26q%3D%23pinduoduo%23',
+                # 'https://m.weibo.cn/search?containerid=100103type%3D1%26q%3D%23temu%23',
+                # 'https://m.weibo.cn/search?containerid=100103type%3D1%26q%3D%23拼多多%23',
+            ]
+            for url in urls:
+                yield Request(url=url, callback=self.parse)
 
     def parse(self, response):
         """解析搜索结果的信息"""
@@ -55,7 +58,7 @@ class weibo_searchSpider(Spider):
             for weibo in self.parse_weibo(response):
                 i = WeiboDisplayItem()
                 i['pub_time'] = weibo['created_at'] + ":00"
-                i['post_url'] = weibo['post_url']
+                i['url'] = weibo['post_url']
                 i['screen_name'] = weibo['screen_name']
                 i['text'] = weibo['text']
 
@@ -227,9 +230,10 @@ class weibo_searchSpider(Spider):
                     './/a[@action-type="feed_list_like"]/button/span[2]/text()').extract_first()
                 attitudes_count = re.findall(r'\d+.*', attitudes_count)
                 weibo['attitudes_count'] = attitudes_count[0] if attitudes_count else '0'
-                created_at = sel.xpath('.//div[@class="from"]/a[1]/text()').extract_first().replace(' ', '').replace('\n',
-                                                                                                            '').split(
-                        '前')[0]
+                created_at = \
+                sel.xpath('.//div[@class="from"]/a[1]/text()').extract_first().replace(' ', '').replace('\n',
+                                                                                                        '').split(
+                    '前')[0]
                 weibo['created_at'] = util.standardize_date(created_at)
                 source = sel.xpath('.//div[@class="from"]/a[2]/text()'
                                    ).extract_first()

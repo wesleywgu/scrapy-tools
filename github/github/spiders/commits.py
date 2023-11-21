@@ -9,30 +9,34 @@ except:
     from scrapy.spiders import BaseSpider as Spider
 from github.items import *
 from misc.db import MySQLUtil
+from scrapy.utils.project import get_project_settings
 
 
 class githubCommitsSpider(Spider):
     name = "commits"
     allowed_domains = ["github.com"]
-    #
-    # start_urls = [
-    #     "https://github.com/easychen?tab=overview&from=2022-10-01&to=2023-10-31",
-    # ]
-
-    db = MySQLUtil('192.168.1.2', 3366, 'root', 'gw201221', 'pdd')
+    env = get_project_settings()['MACHINE_ENV']
 
     def start_requests(self):
-        results = self.db.execute(
-            "select channel_url from pdd_monitor_source where name<>'Github' and channel='Github' and url_grade<>'9'")
+        if self.env == 'online':
+            db = MySQLUtil('192.168.1.2', 3366, 'root', 'gw201221', 'pdd')
+            results = db.execute(
+                "select channel_url from pdd_monitor_source where name<>'Github' and channel='Github' and url_grade<>'9'")
 
-        for row in results:
-            today = datetime.now().date()
-            today_str = today.strftime("%Y-%m-%d")
-            yesterday_str = (today - timedelta(days=1)).strftime("%Y-%m-%d")
-            url = row[0] + "?tab=overview&from={from_date}&to={to_date}".format(from_date=yesterday_str,
-                                                                                to_date=today_str)
-            self.logger.debug(url)
-            yield scrapy.Request(url=url, callback=self.parse_link_urls)
+            for row in results:
+                today = datetime.now().date()
+                today_str = today.strftime("%Y-%m-%d")
+                yesterday_str = (today - timedelta(days=1)).strftime("%Y-%m-%d")
+                url = row[0] + "?tab=overview&from={from_date}&to={to_date}".format(from_date=yesterday_str,
+                                                                                    to_date=today_str)
+                self.logger.debug(url)
+                yield scrapy.Request(url=url, callback=self.parse_link_urls)
+        else:
+            urls = [
+                "https://github.com/easychen?tab=overview&from=2022-10-01&to=2023-10-31",
+            ]
+            for url in urls:
+                yield scrapy.Request(url=url, callback=self.parse_link_urls)
 
     def parse_link_urls(self, response):
         cards = response.css('li.ml-0.py-1.d-flex')

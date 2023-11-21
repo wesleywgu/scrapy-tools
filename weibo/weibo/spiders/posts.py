@@ -20,40 +20,44 @@ from lxml import etree
 from items import WeiboItem
 from items import WeiboDisplayItem
 from misc.db import MySQLUtil
+from scrapy.utils.project import get_project_settings
 
 
 class UserPostsSpider(scrapy.Spider):
     name = "posts"
     allowed_domains = ["weibo.cn"]
-    # start_urls = [
-    #     "https://m.weibo.cn/api/container/getIndex?container_ext=profile_uid:3285381094&page_type=searchall&containerid=2304133285381094&page=1"
-    # ]
-
     url_template = "https://m.weibo.cn/api/container/getIndex?container_ext=profile_uid:{uid}&page_type=searchall&containerid=230413{uid}&page=1"
 
     # 日期时间格式
     DTFORMAT = "%Y-%m-%dT%H:%M:%S"
-
-    db = MySQLUtil('192.168.1.2', 3366, 'root', 'gw201221', 'pdd')
+    env = get_project_settings()['MACHINE_ENV']
 
     def start_requests(self):
-        self.logger.debug("execute start_requests start query sql")
-        results = self.db.execute(
-            "select channel_url from pdd_monitor_source where url_grade <> '9' and channel_url like '%https://weibo.com/u%'")
-        self.logger.debug("execute start_requests finish query sql")
-        for row in results:
-            url = row[0]
-            uid = url.split('/')[-1]
-            new_url = self.url_template.format(uid=uid)
-            self.logger.debug("old={url}, new_url={new_url}".format(url=url, new_url=new_url))
-            yield Request(url=new_url, callback=self.parse)
+        if self.env == 'online':
+            db = MySQLUtil('192.168.1.2', 3366, 'root', 'gw201221', 'pdd')
+            self.logger.debug("execute start_requests start query sql")
+            results = db.execute(
+                "select channel_url from pdd_monitor_source where url_grade <> '9' and channel_url like '%https://weibo.com/u%'")
+            self.logger.debug("execute start_requests finish query sql")
+            for row in results:
+                url = row[0]
+                uid = url.split('/')[-1]
+                new_url = self.url_template.format(uid=uid)
+                self.logger.debug("old={url}, new_url={new_url}".format(url=url, new_url=new_url))
+                yield Request(url=new_url, callback=self.parse)
+        else:
+            urls = [
+                "https://m.weibo.cn/api/container/getIndex?container_ext=profile_uid:3285381094&page_type=searchall&containerid=2304133285381094&page=1"
+            ]
+            for url in urls:
+                yield Request(url=url, callback=self.parse)
 
     def parse(self, response):
         weibos = self.get_one_page(response)
         for weibo in weibos:
             i = WeiboDisplayItem()
             i['pub_time'] = weibo['created_at']
-            i['post_url'] = weibo['post_url']
+            i['url'] = weibo['post_url']
             i['screen_name'] = weibo['screen_name']
             i['text'] = weibo['text']
 

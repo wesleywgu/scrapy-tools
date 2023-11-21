@@ -21,17 +21,31 @@ NEWSPIDER_MODULE = 'github.spiders'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 # USER_AGENT = 'github (+http://www.yourdomain.com)'
+MACHINE_ENV = os.environ.get('env', 'local')
+print("machine env={}".format(MACHINE_ENV))
 
-DOWNLOADER_MIDDLEWARES = {
-    'misc.middleware.LocalHttpProxyMiddleware': 400,
-    'misc.middleware.CustomUserAgentMiddleware': 401,
-}
+if MACHINE_ENV == 'online':
+    DOWNLOADER_MIDDLEWARES = {
+        # 'misc.middleware.LocalHttpProxyMiddleware': 400,
+        'misc.middleware.CustomUserAgentMiddleware': 401,
+    }
 
-ITEM_PIPELINES = {
-    # 'github.pipelines.JsonWithEncodingPipeline': 300,
-    # 'github.pipelines.RedisPipeline': 301,
-    # 'crawlab.CrawlabPipeline': 300,
-}
+    ITEM_PIPELINES = {
+        # 'github.pipelines.JsonWithEncodingPipeline': 300,
+        # 'github.pipelines.RedisPipeline': 301,
+        'crawlab.CrawlabPipeline': 300,
+    }
+else:
+    DOWNLOADER_MIDDLEWARES = {
+        'misc.middleware.LocalHttpProxyMiddleware': 400,
+        'misc.middleware.CustomUserAgentMiddleware': 401,
+    }
+
+    ITEM_PIPELINES = {
+        # 'github.pipelines.JsonWithEncodingPipeline': 300,
+        # 'github.pipelines.RedisPipeline': 301,
+        # 'crawlab.CrawlabPipeline': 300,
+    }
 
 LOG_LEVEL = 'DEBUG'
 LOG_STDOUT = True
