@@ -26,7 +26,6 @@ from misc.db import MySQLUtil
 class baiduSpider(Spider):
     name = "news"
     allowed_domains = ["baidu.com"]
-    db = MySQLUtil('192.168.1.2', 3366, 'root', 'gw201221', 'pdd')
 
     # start_urls = [
     #     "https://www.baidu.com/s?tn=news&rtt=4&bsst=1&cl=2&wd=pdd&medium=0&pn=0",
@@ -35,17 +34,16 @@ class baiduSpider(Spider):
     #     "https://www.baidu.com/s?tn=news&rtt=4&bsst=1&cl=2&wd=拼多多&medium=0&pn=0",
     # ]
 
+    db = MySQLUtil('192.168.1.2', 3366, 'root', 'gw201221', 'pdd')
+
     def start_requests(self):
-        self.logger.debug("execute start_requests start query sql")
+        self.logger.info("execute start_requests start query sql")
         results = self.db.execute("select channel_url from pdd_monitor_source where name='百度'")
-        self.logger.debug("execute start_requests finish query sql")
+        self.logger.info("execute start_requests finish query sql")
         for row in results:
             url = row[0]
-            self.logger.debug(url)
+            self.logger.info(url)
             yield Request(url=url, callback=self.parse)
-
-    def closed(self, spider):
-        self.db.close()
 
     def parse(self, response):
         result = self.parse_news(response.text)
@@ -75,9 +73,9 @@ class baiduSpider(Spider):
             start_num = int(query_dict['pn'][0])
         else:
             start_num = 0
-        total = min(5, total)
+        max_pages = min(5, int(total / 10))
         current_page = int(start_num / 10) + 1
-        if current_page < total:
+        if current_page < max_pages:
             next_url = self.replace_field(current_url, 'pn', current_page * 10)
             yield scrapy.Request(url=next_url, callback=self.parse)
 

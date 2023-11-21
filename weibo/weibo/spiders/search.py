@@ -227,8 +227,7 @@ class weibo_searchSpider(Spider):
                     './/a[@action-type="feed_list_like"]/button/span[2]/text()').extract_first()
                 attitudes_count = re.findall(r'\d+.*', attitudes_count)
                 weibo['attitudes_count'] = attitudes_count[0] if attitudes_count else '0'
-                created_at = \
-                    sel.xpath('.//div[@class="from"]/a[1]/text()').extract_first().replace(' ', '').replace('\n',
+                created_at = sel.xpath('.//div[@class="from"]/a[1]/text()').extract_first().replace(' ', '').replace('\n',
                                                                                                             '').split(
                         '前')[0]
                 weibo['created_at'] = util.standardize_date(created_at)
