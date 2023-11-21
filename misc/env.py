@@ -9,9 +9,18 @@ def get_env():
 
 
 class CookerHelper:
+    decrypted_data = None
+
     def __init__(self):
-        cookie_cloud = PyCookieCloud('https://cookie.wesleyan.site', 'uMTz6qLwhiJrfSEffyC4mb', 'gw201221')
-        self.decrypted_data = cookie_cloud.get_decrypted_data()
+        env = os.environ['env']
+        if env == 'online':
+            cookie_cloud = PyCookieCloud('http://192.168.1.2:8088', 'uMTz6qLwhiJrfSEffyC4mb', 'gw201221')
+            self.decrypted_data = cookie_cloud.get_decrypted_data()
+            print(self.decrypted_data)
+        else:
+            cookie_cloud = PyCookieCloud('https://cookie.wesleyan.site', 'uMTz6qLwhiJrfSEffyC4mb', 'gw201221')
+            self.decrypted_data = cookie_cloud.get_decrypted_data()
+            print(self.decrypted_data)
 
     def get_cookie(self, domain):
         items = self.decrypted_data[domain]
