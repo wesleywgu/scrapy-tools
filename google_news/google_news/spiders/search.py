@@ -47,8 +47,7 @@ class googleSpider(Spider):
         news_list = self.build_response(response)
         for news in news_list:
             google_news = googleItem()
-            google_news['title'] = news['title']
-            google_news['desc'] = news['desc']
+            google_news['content'] = news['title'] + ' ## ' + news['desc']
             google_news['author'] = news['author']
             google_news['pub_time'] = news['datetime'].strftime("%Y-%m-%d %H:%M:%S")
             google_news['url'] = news['link']

@@ -96,7 +96,7 @@ class twitterSpider(Spider):
         for card in page_cards:
             tweet = twitterItem()
             try:
-                tweet['user_name'] = card.find_element(by=By.XPATH, value='.//span').text
+                tweet['author'] = card.find_element(by=By.XPATH, value='.//span').text
 
                 utc_time_str = card.find_element(by=By.XPATH, value='.//time').get_attribute('datetime')
                 # 将UTC时间字符串转换为datetime对象
@@ -108,7 +108,7 @@ class twitterSpider(Spider):
                 # 格式化为指定格式的字符串
                 tweet['pub_time'] = china_time.strftime("%Y-%m-%d %H:%M:%S")
 
-                tweet['text'] = card.find_element(by=By.XPATH, value='.//div[@dir="auto"]').text.replace('\n', '')
+                tweet['content'] = card.find_element(by=By.XPATH, value='.//div[@dir="auto"]').text.replace('\n', '')
                 tweet['url'] = card.find_element(by=By.XPATH, value='.//a[contains(@href, "/status/")]').get_attribute(
                     'href')
 

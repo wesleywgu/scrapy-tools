@@ -6,6 +6,7 @@
 # https://docs.scrapy.org/en/latest/topics/items.html
 
 import scrapy
+from scrapy import Field
 
 
 class WeiboItem(scrapy.Item):
@@ -35,9 +36,9 @@ class WeiboItem(scrapy.Item):
 
 class WeiboDisplayItem(scrapy.Item):
     # define the fields for your item here like:
-    url = scrapy.Field()
-    screen_name = scrapy.Field()
-    text = scrapy.Field()
-    pub_time = scrapy.Field()
-    source_url = scrapy.Field()
-    craw_time = scrapy.Field()
+    content = Field()
+    author = Field()
+    url = Field()
+    pub_time = Field()
+    craw_time = Field()
+    source_url = Field()

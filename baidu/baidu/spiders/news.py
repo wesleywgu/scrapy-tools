@@ -61,9 +61,8 @@ class baiduSpider(Spider):
                 i['pub_time'] = self.convert_time(news['date']).strftime("%Y-%m-%d %H:%M:%S")
             else:
                 i['pub_time'] = '无'
-            i['desc'] = news['des']
             i['url'] = news['url']
-            i['title'] = news['title']
+            i['content'] = news['title'] + " ## " + news['des']
 
             time_now = datetime.now()
             current_time = time_now.strftime("%Y-%m-%d %H:%M:%S")

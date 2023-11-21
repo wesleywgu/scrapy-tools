@@ -54,7 +54,7 @@ class githubCommitsSpider(Spider):
                 url = card.xpath('./div[2]/ol/li/div[1]/p/a/@href').get()
             commit['url'] = 'https://github.com' + url
 
-            commit['title'] = card.css('p.mb-1 a::text').get()
+            commit['content'] = card.css('p.mb-1 a::text').get()
             commit['author'] = card.css('a.commit-author.user-mention::text').get()
 
             utc_time_str = card.xpath('//relative-time/@datetime').get()

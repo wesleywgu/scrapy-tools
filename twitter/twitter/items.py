@@ -8,9 +8,9 @@ from scrapy.item import Item, Field
 
 class twitterItem(Item):
     # define the fields for your item here like:
-    user_name = Field()
-    pub_time = Field()
-    text = Field()
+    content = Field()
+    author = Field()
     url = Field()
+    pub_time = Field()
     craw_time = Field()
     source_url = Field()

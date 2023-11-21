@@ -8,10 +8,9 @@ from scrapy.item import Item, Field
 
 class googleItem(Item):
     # define the fields for your item here like:
-    title = Field()
-    desc = Field()
+    content = Field()
     author = Field()
-    pub_time = Field()
     url = Field()
-    source_url = Field()
+    pub_time = Field()
     craw_time = Field()
+    source_url = Field()

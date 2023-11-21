@@ -59,8 +59,8 @@ class weibo_searchSpider(Spider):
                 i = WeiboDisplayItem()
                 i['pub_time'] = weibo['created_at'] + ":00"
                 i['url'] = weibo['post_url']
-                i['screen_name'] = weibo['screen_name']
-                i['text'] = weibo['text']
+                i['author'] = weibo['screen_name']
+                i['content'] = weibo['text']
 
                 time_now = datetime.now()
                 current_time = time_now.strftime("%Y-%m-%d %H:%M:%S")
