@@ -217,9 +217,9 @@ class WebPageDownloader:
                 opener.addheaders = REQUEST_HEADER
                 html = opener.open(url)
                 source = html.read()
-            except HTTPError, e:
+            except HTTPError as e:
                 error_msg = "Error [%s, %s]" % (e, "")
-            except URLError, e:
+            except URLError as e:
                 error_msg = "Error [%s, %s]" % (e.reason, "")
             except:
                 error_msg = "Error [%s, %s]" % (sys.exc_info(), "")
