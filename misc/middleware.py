@@ -233,7 +233,7 @@ class WeiboUserAgentMiddleware(object):
         request.headers['User-Agent'] = agent
         request.headers['Accept'] = DEFAULT_REQUEST_HEADERS['Accept']
         request.headers['Accept-Language'] = DEFAULT_REQUEST_HEADERS['Accept-Language']
-        request.headers['Cookie'] = self.cookie_helper.get('.weibo.com')
+        request.headers['Cookie'] = self.cookie_helper.get_cookie('.weibo.com')
 
 
 class BaiduUserAgentMiddleware(object):
@@ -249,7 +249,7 @@ class BaiduUserAgentMiddleware(object):
             'User-Agent'] = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36'
         request.headers['Accept'] = DEFAULT_REQUEST_HEADERS['Accept']
         request.headers['Accept-Language'] = DEFAULT_REQUEST_HEADERS['Accept-Language']
-        request.headers['Cookie'] = self.cookie_helper.get('.baidu.com')
+        request.headers['Cookie'] = self.cookie_helper.get_cookie('.baidu.com')
 
 
 class GoogleUserAgentMiddleware(object):

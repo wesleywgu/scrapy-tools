@@ -60,10 +60,10 @@ class ProxyResource:
 
 
     def __loadFromProxyServer(self, proxies, url):
-        print "load proxies from %s " % url
+        print("load proxies from %s " % url)
         source = self.html_getter.getHtmlRetry(url, 3)
         source = unicode(source, "UTF-8").encode("UTF-8")
-        print source        
+        print(source)
         results = source.split("\n")[2:-2]
         count = 0
         if results is not None:
@@ -76,7 +76,7 @@ class ProxyResource:
                 model = ProxyModel(ip, port, "proxyServer")
                 proxies.append(model)
                 count += 1
-        print "---proxyLoader---:load proxy from proxyServer get %s " % count
+        print("---proxyLoader---:load proxy from proxyServer get %s " % count)
         
     def __loadProxyFromURL(self, proxies, url, pattern):
         '''Put model into ProxyModel, return has_next_page.'''
