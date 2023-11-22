@@ -50,7 +50,7 @@ class twitterSpider(Spider):
                 yield SeleniumRequest(url=url, callback=self.parse_result, cookies=cookie_dict)
         else:
             urls = [
-                'https://twitter.com/oldamnnt',
+                'https://twitter.com/ResearchGrizzly',
             ]
             for url in urls:
                 yield SeleniumRequest(url=url, callback=self.parse_result, cookies=cookie_dict)

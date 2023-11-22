@@ -68,63 +68,63 @@ class twitterSpider(Spider):
                 yield SeleniumRequest(url=url, callback=self.parse_result, cookies=cookie_dict)
 
 
-def parse_result(self, response):
-    browser = response.meta['driver']
+    def parse_result(self, response):
+        browser = response.meta['driver']
 
-    final_tweets = {}
+        final_tweets = {}
 
-    # 模拟多次滚动
-    for _ in range(10):
-        sleep(2)
+        # 模拟多次滚动
+        for _ in range(10):
+            sleep(2)
 
-        part_tweets = self.get_tweets(browser)
-        final_tweets.update(part_tweets)
+            part_tweets = self.get_tweets(browser)
+            final_tweets.update(part_tweets)
 
-        self.scroll_down(browser)
+            self.scroll_down(browser)
 
-    for i in final_tweets.values():
-        yield i
-
-
-def scroll_down(self, browser) -> None:
-    """Helps to scroll down web page"""
-    try:
-        body = browser.find_element(By.CSS_SELECTOR, 'body')
-        for _ in range(randint(1, 3)):
-            body.send_keys(Keys.PAGE_DOWN)
-    except Exception as ex:
-        print("Error at scroll_down method {}".format(ex))
+        for i in final_tweets.values():
+            yield i
 
 
-def get_tweets(self, browser):
-    # 提取数据
-    tweets = {}
-    page_cards = browser.find_elements(by=By.XPATH, value='//article[@data-testid="tweet"]')
-    for card in page_cards:
-        tweet = twitterItem()
+    def scroll_down(self, browser) -> None:
+        """Helps to scroll down web page"""
         try:
-            tweet['author'] = card.find_element(by=By.XPATH, value='.//span').text
+            body = browser.find_element(By.CSS_SELECTOR, 'body')
+            for _ in range(randint(1, 3)):
+                body.send_keys(Keys.PAGE_DOWN)
+        except Exception as ex:
+            print("Error at scroll_down method {}".format(ex))
 
-            utc_time_str = card.find_element(by=By.XPATH, value='.//time').get_attribute('datetime')
-            # 将UTC时间字符串转换为datetime对象
-            utc_time = datetime.strptime(utc_time_str, "%Y-%m-%dT%H:%M:%S.%fZ")
-            # 创建时区对象，表示中国的时区为东八区
-            china_timezone = timezone(timedelta(hours=8))
-            # 将UTC时间转换为中国本地时间
-            china_time = utc_time.replace(tzinfo=timezone.utc).astimezone(china_timezone)
-            # 格式化为指定格式的字符串
-            tweet['pub_time'] = china_time.strftime("%Y-%m-%d %H:%M:%S")
 
-            tweet['content'] = card.find_element(by=By.XPATH, value='.//div[@dir="auto"]').text.replace('\n', '')
-            tweet['url'] = card.find_element(by=By.XPATH, value='.//a[contains(@href, "/status/")]').get_attribute(
-                'href')
+    def get_tweets(self, browser):
+        # 提取数据
+        tweets = {}
+        page_cards = browser.find_elements(by=By.XPATH, value='//article[@data-testid="tweet"]')
+        for card in page_cards:
+            tweet = twitterItem()
+            try:
+                tweet['author'] = card.find_element(by=By.XPATH, value='.//span').text
 
-            time_now = datetime.now()
-            current_time = time_now.strftime("%Y-%m-%d %H:%M:%S")
-            tweet['craw_time'] = current_time
-            tweet['source_url'] = browser.current_url
+                utc_time_str = card.find_element(by=By.XPATH, value='.//time').get_attribute('datetime')
+                # 将UTC时间字符串转换为datetime对象
+                utc_time = datetime.strptime(utc_time_str, "%Y-%m-%dT%H:%M:%S.%fZ")
+                # 创建时区对象，表示中国的时区为东八区
+                china_timezone = timezone(timedelta(hours=8))
+                # 将UTC时间转换为中国本地时间
+                china_time = utc_time.replace(tzinfo=timezone.utc).astimezone(china_timezone)
+                # 格式化为指定格式的字符串
+                tweet['pub_time'] = china_time.strftime("%Y-%m-%d %H:%M:%S")
 
-            tweets[tweet['url']] = tweet
-        except:
-            pass
-    return tweets
+                tweet['content'] = card.find_element(by=By.XPATH, value='.//div[@dir="auto"]').text.replace('\n', '')
+                tweet['url'] = card.find_element(by=By.XPATH, value='.//a[contains(@href, "/status/")]').get_attribute(
+                    'href')
+
+                time_now = datetime.now()
+                current_time = time_now.strftime("%Y-%m-%d %H:%M:%S")
+                tweet['craw_time'] = current_time
+                tweet['source_url'] = browser.current_url
+
+                tweets[tweet['url']] = tweet
+            except:
+                pass
+        return tweets

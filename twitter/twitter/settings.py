@@ -41,12 +41,12 @@ if MACHINE_ENV == 'online':
     }
 else:
     DOWNLOADER_MIDDLEWARES = {
-        # 'misc.middleware.CustomHttpProxyMiddleware': 400,
+        'misc.middleware.CustomHttpProxyMiddleware': 400,
         'misc.middleware.SeleniumMiddleware': 401,
     }
 
     ITEM_PIPELINES = {
-        # 'twitter.pipelines.JsonWithEncodingPipeline': 300,
+        'twitter.pipelines.JsonWithEncodingPipeline': 300,
         # 'twitter.pipelines.RedisPipeline': 301,
         # 'crawlab.CrawlabPipeline': 300,
     }
