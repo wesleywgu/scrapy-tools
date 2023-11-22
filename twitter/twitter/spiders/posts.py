@@ -87,7 +87,16 @@ class twitterSpider(Spider):
         for card in page_cards:
             tweet = twitterItem()
             try:
-                tweet['author'] = card.find_element(by=By.XPATH, value='.//a/div/div[@dir="ltr"]/span/span').text
+                tweet['url'] = card.find_element(by=By.XPATH, value='.//a[contains(@href, "/status/")]').get_attribute(
+                    'href')
+                retweet_words = card.find_element(by=By.XPATH,
+                                                  value='//span[@data-testid="socialContext"]').text
+                if 'reposted' in retweet_words:
+                    tweet['author'] = card.find_element(by=By.XPATH,
+                                                        value='//span[@data-testid="socialContext"]/span/span').text
+                    tweet['url'] = tweet['url'] + "&retweet=" + tweet['author']
+                else:
+                    tweet['author'] = card.find_element(by=By.XPATH, value='.//a/div/div[@dir="ltr"]/span/span').text
 
                 utc_time_str = card.find_element(by=By.XPATH, value='.//time').get_attribute('datetime')
                 # 将UTC时间字符串转换为datetime对象
@@ -103,9 +112,6 @@ class twitterSpider(Spider):
                 tweet['content'] = ''
                 for i in text_parts:
                     tweet['content'] = tweet['content'] + i.text
-
-                tweet['url'] = card.find_element(by=By.XPATH, value='.//a[contains(@href, "/status/")]').get_attribute(
-                    'href')
 
                 time_now = datetime.now()
                 current_time = time_now.strftime("%Y-%m-%d %H:%M:%S")
