@@ -9,14 +9,13 @@ from scrapy import Request
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import re
-from urllib.parse import unquote
+from urllib.parse import unquote, urlparse
 
 from scrapy.spiders import Spider
 from items import WeiboItem
 from items import WeiboDisplayItem
 from utils import util
 from scrapy.exceptions import CloseSpider
-from urllib.parse import urlparse
 from misc.db import MySQLUtil
 from scrapy.utils.project import get_project_settings
 
@@ -31,7 +30,8 @@ class weibo_searchSpider(Spider):
         if self.env == 'online':
             db = MySQLUtil('192.168.1.2', 3366, 'root', 'gw201221', 'pdd')
             self.logger.debug("execute start_requests start query sql")
-            results = db.execute("select channel_url from pdd_monitor_source where name='新浪微博' and url_grade between 1 and 3")
+            results = db.execute(
+                "select channel_url from pdd_monitor_source where name='新浪微博' and url_grade between 1 and 3")
             self.logger.debug("execute start_requests finish query sql")
             for row in results:
                 url = row[0]
@@ -39,7 +39,7 @@ class weibo_searchSpider(Spider):
                 yield Request(url=url, callback=self.parse)
         else:
             urls = [
-                'https://s.weibo.com/realtime?q=pdd&rd=realtime&tw=realtime&Refer=weibo_realtime',
+                'https://s.weibo.com/realtime?q=%E6%8B%BC%E5%A4%9A%E5%A4%9A%20%E5%8D%A1%E5%B7%B4%E6%96%AF%E5%9F%BA&rd=realtime&tw=realtime&Refer=weibo_realtime&page=3',
                 # 'https://s.weibo.com/realtime?q=pinduoduo&rd=realtime&tw=realtime&Refer=weibo_realtime',
                 # 'https://s.weibo.com/realtime?q=temu&rd=realtime&tw=realtime&Refer=weibo_realtime',
                 # 'https://s.weibo.com/realtime?q=拼多多&rd=realtime&tw=realtime&Refer=weibo_realtime',
@@ -71,15 +71,15 @@ class weibo_searchSpider(Spider):
                 yield i
 
             # 下一页
-            next_url = response.xpath('//a[@class="next"]/@href').extract_first()
-            if next_url:
-                next_url = self.base_url + next_url
-                o = urlparse(next_url)
-                for i in o.query.split('&'):
-                    if 'page' in i:
-                        num = int(i.split('=')[1])
-                        if num <= 5:  # 最多爬取5页
-                            yield scrapy.Request(url=next_url, callback=self.parse)
+            # next_url = response.xpath('//a[@class="next"]/@href').extract_first()
+            # if next_url:
+            #     next_url = self.base_url + next_url
+            #     o = urlparse(next_url)
+            #     for i in o.query.split('&'):
+            #         if 'page' in i:
+            #             num = int(i.split('=')[1])
+            #             if num <= 5:  # 最多爬取5页
+            #                 yield scrapy.Request(url=next_url, callback=self.parse)
 
     def get_ip(self, bid):
         url = f"https://weibo.com/ajax/statuses/show?id={bid}&locale=zh-CN"
@@ -233,9 +233,9 @@ class weibo_searchSpider(Spider):
                 attitudes_count = re.findall(r'\d+.*', attitudes_count)
                 weibo['attitudes_count'] = attitudes_count[0] if attitudes_count else '0'
                 created_at = \
-                sel.xpath('.//div[@class="from"]/a[1]/text()').extract_first().replace(' ', '').replace('\n',
-                                                                                                        '').split(
-                    '前')[0]
+                    sel.xpath('.//div[@class="from"]/a[1]/text()').extract_first().replace(' ', '').replace('\n',
+                                                                                                            '').split(
+                        '前')[0]
                 weibo['created_at'] = util.standardize_date(created_at)
                 source = sel.xpath('.//div[@class="from"]/a[2]/text()'
                                    ).extract_first()
@@ -263,9 +263,9 @@ class weibo_searchSpider(Spider):
                     weibo['pics'] = ''
                     weibo['video_url'] = ''
                 weibo['retweet_id'] = ''
+                retweet = WeiboItem()
                 if retweet_sel and retweet_sel[0].xpath(
                         './/div[@node-type="feed_list_forwardContent"]/a[1]'):
-                    retweet = WeiboItem()
                     retweet['id'] = retweet_sel[0].xpath(
                         './/a[@action-type="feed_list_like"]/@action-data'
                     ).extract_first()[4:]
@@ -321,7 +321,9 @@ class weibo_searchSpider(Spider):
                     retweet['pics'] = pics
                     retweet['video_url'] = video_url
                     retweet['retweet_id'] = ''
-                    yield {'weibo': retweet, 'keyword': keyword}
                     weibo['retweet_id'] = retweet['id']
                 weibo["ip"] = self.get_ip(bid)
+
+                if 'text' in retweet:
+                    weibo['text'] = weibo['text'] + ', 转发:' + retweet['text']
                 yield weibo

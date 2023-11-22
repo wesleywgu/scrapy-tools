@@ -1,3 +1,3 @@
-find . -name '*.pyc' | xargs rm
-find . -name '*.json' | xargs rm
+find . -name '*.pyc' | xargs rm -rf
+find . -name '*.json' | xargs rm -rf
 find . -name '__pycache__' | xargs rm -rf

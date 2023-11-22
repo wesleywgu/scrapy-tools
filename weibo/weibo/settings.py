@@ -44,7 +44,7 @@ else:
     }
 
     ITEM_PIPELINES = {
-        # 'weibo.pipelines.JsonWithEncodingPipeline': 300,
+        'weibo.pipelines.JsonWithEncodingPipeline': 300,
         # 'weibo.pipelines.RedisPipeline': 301,
         # 'crawlab.CrawlabPipeline': 300,
     }
