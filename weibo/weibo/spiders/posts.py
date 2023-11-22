@@ -50,7 +50,7 @@ class UserPostsSpider(scrapy.Spider):
                 yield Request(url=new_url, callback=self.parse)
         else:
             urls = [
-                "https://m.weibo.cn/api/container/getIndex?container_ext=profile_uid:3285381094&page_type=searchall&containerid=2304133285381094&page=1"
+                "https://m.weibo.cn/api/container/getIndex?container_ext=profile_uid%3A2214340953&page_type=searchall&containerid=2304132214340953&page=1"
             ]
             for url in urls:
                 yield Request(url=url, callback=self.parse)
@@ -64,7 +64,8 @@ class UserPostsSpider(scrapy.Spider):
             i['author'] = weibo['screen_name']
 
             if 'retweet' in weibo and 'text' in weibo['retweet']:
-                i['content'] = weibo['text'] + "，转发：@" + weibo['retweet']['screen_name'] + ", 转发内容：" + weibo['retweet']['text']
+                i['content'] = weibo['text'] + "，转发：@" + weibo['retweet']['screen_name'] + ", 转发内容：" + \
+                               weibo['retweet']['text']
             else:
                 i['content'] = weibo['text']
 
@@ -80,7 +81,7 @@ class UserPostsSpider(scrapy.Spider):
         user_id = query_dict['container_ext'][0].replace('profile_uid:', '')
         user_info = self.get_user_info(user_id)
         weibo_count = user_info["statuses_count"]
-        max_page_count = int(math.ceil(weibo_count / 10.0))
+        max_page_count = math.ceil(int(weibo_count) / 10)
         max_page_count = min(5, max_page_count)
         current_page = int(query_dict['page'][0])
         if current_page < max_page_count:
@@ -410,6 +411,7 @@ class UserPostsSpider(scrapy.Spider):
                     else:
                         w = w
                     wb = self.get_one_weibo(w)
+                    yield wb
                 if w["card_type"] == 9:
                     wb = self.get_one_weibo(w)
-                yield wb
+                    yield wb
