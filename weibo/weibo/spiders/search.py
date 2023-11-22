@@ -39,7 +39,7 @@ class weibo_searchSpider(Spider):
                 yield Request(url=url, callback=self.parse)
         else:
             urls = [
-                'https://s.weibo.com/realtime?q=%E6%8B%BC%E5%A4%9A%E5%A4%9A%20%E5%8D%A1%E5%B7%B4%E6%96%AF%E5%9F%BA&rd=realtime&tw=realtime&Refer=weibo_realtime&page=3',
+                'https://s.weibo.com/weibo?q=pdd&Refer=realtime_weibo',
                 # 'https://s.weibo.com/realtime?q=pinduoduo&rd=realtime&tw=realtime&Refer=weibo_realtime',
                 # 'https://s.weibo.com/realtime?q=temu&rd=realtime&tw=realtime&Refer=weibo_realtime',
                 # 'https://s.weibo.com/realtime?q=拼多多&rd=realtime&tw=realtime&Refer=weibo_realtime',
@@ -71,15 +71,15 @@ class weibo_searchSpider(Spider):
                 yield i
 
             # 下一页
-            # next_url = response.xpath('//a[@class="next"]/@href').extract_first()
-            # if next_url:
-            #     next_url = self.base_url + next_url
-            #     o = urlparse(next_url)
-            #     for i in o.query.split('&'):
-            #         if 'page' in i:
-            #             num = int(i.split('=')[1])
-            #             if num <= 5:  # 最多爬取5页
-            #                 yield scrapy.Request(url=next_url, callback=self.parse)
+            next_url = response.xpath('//a[@class="next"]/@href').extract_first()
+            if next_url:
+                next_url = self.base_url + next_url
+                o = urlparse(next_url)
+                for i in o.query.split('&'):
+                    if 'page' in i:
+                        num = int(i.split('=')[1])
+                        if num <= 5:  # 最多爬取5页
+                            yield scrapy.Request(url=next_url, callback=self.parse)
 
     def get_ip(self, bid):
         url = f"https://weibo.com/ajax/statuses/show?id={bid}&locale=zh-CN"

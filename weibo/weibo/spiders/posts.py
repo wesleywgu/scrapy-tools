@@ -62,7 +62,11 @@ class UserPostsSpider(scrapy.Spider):
             i['pub_time'] = weibo['created_at']
             i['url'] = weibo['post_url']
             i['author'] = weibo['screen_name']
-            i['content'] = weibo['text']
+
+            if 'retweet' in weibo and 'text' in weibo['retweet']:
+                i['content'] = weibo['text'] + "，转发：@" + weibo['retweet']['screen_name'] + ", 转发内容：" + weibo['retweet']['text']
+            else:
+                i['content'] = weibo['text']
 
             time_now = datetime.now()
             current_time = time_now.strftime("%Y-%m-%d %H:%M:%S")
