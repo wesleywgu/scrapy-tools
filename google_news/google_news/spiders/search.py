@@ -95,9 +95,9 @@ class googleSpider(Spider):
             except Exception:
                 tmp_link = ''
             try:
-                tmp_media = item.xpath('.//a/div/div[2]/div[1]/span/text()').get().replace("\n", "")
+                tmp_author = item.xpath('.//a/div/div[2]/div[1]/span/text()').get().replace("\n", "")
             except Exception:
-                tmp_media = ''
+                tmp_author = item.xpath('.//a/div/div/div[1]/span/text()').get().replace("\n", "")
             try:
                 tmp_date_str = item.xpath('.//div[@style="bottom:0px"]/span/text()').get().replace("\n", "")
                 tmp_date, tmp_datetime = self.lexical_date_parser(tmp_date_str)
@@ -109,7 +109,7 @@ class googleSpider(Spider):
                 {
                     'title': tmp_text,
                     'desc': tmp_desc,
-                    'author': tmp_media,
+                    'author': tmp_author,
                     'date': tmp_date,
                     'datetime': self.define_date(tmp_date),
                     'link': tmp_link,
