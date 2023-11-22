@@ -25,7 +25,7 @@ class githubSearchSpider(Spider):
         if self.env == 'online':
             db = MySQLUtil('192.168.1.2', 3366, 'root', 'gw201221', 'pdd')
             self.logger.debug("execute start_requests start query sql")
-            results = db.execute("select channel_url from pdd_monitor_source where name='Github'")
+            results = db.execute("select channel_url from pdd_monitor_source where name='Github' and url_grade between 1 and 3")
             self.logger.debug("execute start_requests finish query sql")
             for row in results:
                 url = row[0]

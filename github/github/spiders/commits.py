@@ -21,7 +21,7 @@ class githubCommitsSpider(Spider):
         if self.env == 'online':
             db = MySQLUtil('192.168.1.2', 3366, 'root', 'gw201221', 'pdd')
             results = db.execute(
-                "select channel_url from pdd_monitor_source where name<>'Github' and channel='Github' and url_grade<>'9'")
+                "select channel_url from pdd_monitor_source where name<>'Github' and channel='Github' and url_grade between 1 and 3")
 
             for row in results:
                 today = datetime.now().date()
