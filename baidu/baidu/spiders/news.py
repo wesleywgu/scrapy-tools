@@ -1,3 +1,4 @@
+import math
 import os
 import re
 import sys
@@ -33,7 +34,8 @@ class baiduSpider(Spider):
         if self.env == 'online':
             db = MySQLUtil('192.168.1.2', 3366, 'root', 'gw201221', 'pdd')
             self.logger.info("execute start_requests start query sql")
-            results = db.execute("select channel_url from pdd_monitor_source where name='百度' and url_grade between 1 and 3")
+            results = db.execute(
+                "select channel_url from pdd_monitor_source where name='百度' and url_grade between 1 and 3")
             self.logger.info("execute start_requests finish query sql")
             for row in results:
                 url = row[0]
@@ -41,7 +43,7 @@ class baiduSpider(Spider):
                 yield Request(url=url, callback=self.parse)
         else:
             urls = [
-                "https://www.baidu.com/s?tn=news&rtt=4&bsst=1&cl=2&wd=%E6%8B%BC%E5%A4%9A%E5%A4%9A%20%E9%9A%90%E7%A7%81&medium=0&pn=0",
+                "https://www.baidu.com/s?tn=news&rtt=4&bsst=1&cl=2&wd=Grizzly%20Research&medium=0&pn=0",
                 # "https://www.baidu.com/s?tn=news&rtt=4&bsst=1&cl=2&wd=pdd&medium=0&pn=0",
                 # "https://www.baidu.com/s?tn=news&rtt=4&bsst=1&cl=2&wd=pinduoduo&medium=0&pn=0",
                 # "https://www.baidu.com/s?tn=news&rtt=4&bsst=1&cl=2&wd=temu&medium=0&pn=0",
@@ -77,7 +79,8 @@ class baiduSpider(Spider):
             start_num = int(query_dict['pn'][0])
         else:
             start_num = 0
-        max_pages = min(5, int(total / 10))
+
+        max_pages = min(5, math.ceil(int(total) / 10))
         current_page = int(start_num / 10) + 1
         if current_page < max_pages:
             next_url = self.replace_field(current_url, 'pn', current_page * 10)

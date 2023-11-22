@@ -45,7 +45,7 @@ else:
     }
 
     ITEM_PIPELINES = {
-        # 'baidu.pipelines.JsonWithEncodingPipeline': 300,
+        'baidu.pipelines.JsonWithEncodingPipeline': 300,
         # 'baidu.pipelines.RedisPipeline': 301,
         # 'crawlab.CrawlabPipeline': 300,
     }

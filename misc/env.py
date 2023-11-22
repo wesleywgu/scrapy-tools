@@ -3,7 +3,7 @@ from PyCookieCloud import PyCookieCloud
 
 
 def get_env():
-    env = os.environ['env']
+    env = os.environ.get('env','dev')
     print("machine env={}".format(env))
     return env
 
@@ -12,7 +12,7 @@ class CookerHelper:
     decrypted_data = None
 
     def __init__(self):
-        env = os.environ['env']
+        env = os.environ.get('env', 'dev')
         if env == 'online':
             cookie_cloud = PyCookieCloud('http://192.168.1.2:8088', 'uMTz6qLwhiJrfSEffyC4mb', 'gw201221')
             self.decrypted_data = cookie_cloud.get_decrypted_data()

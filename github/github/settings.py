@@ -21,7 +21,7 @@ NEWSPIDER_MODULE = 'github.spiders'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 # USER_AGENT = 'github (+http://www.yourdomain.com)'
-MACHINE_ENV = os.environ.get('env', 'local')
+MACHINE_ENV = os.environ.get('env', 'dev')
 print("machine env={}".format(MACHINE_ENV))
 
 if MACHINE_ENV == 'online':
