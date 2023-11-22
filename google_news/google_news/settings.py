@@ -37,19 +37,18 @@ if MACHINE_ENV == 'online':
     }
 else:
     DOWNLOADER_MIDDLEWARES = {
-        'misc.middleware.LocalHttpProxyMiddleware': 400,
+        # 'misc.middleware.LocalHttpProxyMiddleware': 400,
         'misc.middleware.GoogleUserAgentMiddleware': 401,
     }
 
     ITEM_PIPELINES = {
-        # 'google_news.pipelines.JsonWithEncodingPipeline': 300,
+        'google_news.pipelines.JsonWithEncodingPipeline': 300,
         # 'google_news.pipelines.RedisPipeline': 301,
         # 'crawlab.CrawlabPipeline': 300,
     }
 
 LOG_LEVEL = 'DEBUG'
 COOKIES_ENABLED = False
-LOG_LEVEL = 'DEBUG'
 LOG_STDOUT = True
 ROBOTSTXT_OBEY = False
 DOWNLOAD_DELAY = 10

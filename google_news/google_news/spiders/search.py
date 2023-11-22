@@ -35,10 +35,7 @@ class googleSpider(Spider):
                 yield Request(url=url, callback=self.parse)
         else:
             urls = [
-                'https://www.google.com/search?q=pdd&sca_esv=581520105&tbas=0&tbs=qdr:w,sbd:1&tbm=nws&sxsrf=AM9HkKkXb3sBmvO6GPX6Bk-OFf-AauWLOA:1699710999318&ei=F4hPZeqGE5vf2roPk-C5sA4&start=0&sa=N&ved=2ahUKEwiq7tbyjLyCAxWbr1YBHRNwDuY4ChDx0wN6BAgCEAI&biw=1680&bih=825&dpr=2&hl=en',
-                'https://www.google.com/search?q=pinduoduo&sca_esv=581520105&tbas=0&tbs=qdr:w,sbd:1&tbm=nws&sxsrf=AM9HkKkXb3sBmvO6GPX6Bk-OFf-AauWLOA:1699710999318&ei=F4hPZeqGE5vf2roPk-C5sA4&start=0&sa=N&ved=2ahUKEwiq7tbyjLyCAxWbr1YBHRNwDuY4ChDx0wN6BAgCEAI&biw=1680&bih=825&dpr=2&hl=en',
-                'https://www.google.com/search?q=temu&sca_esv=581520105&tbas=0&tbs=qdr:w,sbd:1&tbm=nws&sxsrf=AM9HkKkXb3sBmvO6GPX6Bk-OFf-AauWLOA:1699710999318&ei=F4hPZeqGE5vf2roPk-C5sA4&start=0&sa=N&ved=2ahUKEwiq7tbyjLyCAxWbr1YBHRNwDuY4ChDx0wN6BAgCEAI&biw=1680&bih=825&dpr=2&hl=en',
-                'https://www.google.com/search?q=拼多多&sca_esv=581520105&tbas=0&tbs=qdr:w,sbd:1&tbm=nws&sxsrf=AM9HkKkXb3sBmvO6GPX6Bk-OFf-AauWLOA:1699710999318&ei=F4hPZeqGE5vf2roPk-C5sA4&start=0&sa=N&ved=2ahUKEwiq7tbyjLyCAxWbr1YBHRNwDuY4ChDx0wN6BAgCEAI&biw=1680&bih=825&dpr=2&hl=en',
+                'https://www.google.com/search?q=pdd&sca_esv=581520105&tbas=0&tbs=qdr:w,sbd:1&tbm=nws&sxsrf=AM9HkKkXb3sBmvO6GPX6Bk-OFf-AauWLOA:1699710999318&ei=F4hPZeqGE5vf2roPk-C5sA4&start=0&sa=N&ved=2ahUKEwiq7tbyjLyCAxWbr1YBHRNwDuY4ChDx0wN6BAgCEAI&biw=1680&bih=825&dpr=2&hl=en'
             ]
             for url in urls:
                 yield Request(url=url, callback=self.parse)
@@ -86,12 +83,12 @@ class googleSpider(Spider):
             try:
                 tmp_text = item.xpath('.//a/div/div[2]/div[2]/text()').get().replace("\n", "")
             except Exception:
-                tmp_text = ''
+                tmp_text = item.xpath('.//a/div/div/div[2]/text()').get().replace("\n", "")
 
             try:
                 tmp_desc = item.xpath('.//a/div/div[2]/div[3]/text()').get().replace("\n", "")
             except Exception:
-                tmp_desc = ''
+                tmp_desc = item.xpath('.//a/div/div/div[3]/text()').get().replace("\n", "")
 
             try:
                 tmp_link = item.xpath('.//a/@href').get()
