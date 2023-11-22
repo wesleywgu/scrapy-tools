@@ -89,8 +89,12 @@ class twitterSpider(Spider):
             try:
                 tweet['url'] = card.find_element(by=By.XPATH, value='.//a[contains(@href, "/status/")]').get_attribute(
                     'href')
-                retweet_words = card.find_element(by=By.XPATH,
-                                                  value='//span[@data-testid="socialContext"]').text
+                try:
+                    retweet_words = card.find_element(by=By.XPATH,
+                                                      value='.//span[@data-testid="socialContext"]').text
+                except Exception as ex:
+                    retweet_words = ''
+
                 if 'reposted' in retweet_words:
                     tweet['author'] = card.find_element(by=By.XPATH,
                                                         value='//span[@data-testid="socialContext"]/span/span').text
