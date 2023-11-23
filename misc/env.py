@@ -16,11 +16,11 @@ class CookerHelper:
         if env == 'online':
             cookie_cloud = PyCookieCloud('http://192.168.1.2:8088', 'uMTz6qLwhiJrfSEffyC4mb', 'gw201221')
             self.decrypted_data = cookie_cloud.get_decrypted_data()
-            print(self.decrypted_data)
+            print('cookie加载成功')
         else:
             cookie_cloud = PyCookieCloud('https://cookie.wesleyan.site', 'uMTz6qLwhiJrfSEffyC4mb', 'gw201221')
             self.decrypted_data = cookie_cloud.get_decrypted_data()
-            print(self.decrypted_data)
+            print('cookie加载成功')
 
     def get_cookie(self, domain):
         items = self.decrypted_data[domain]

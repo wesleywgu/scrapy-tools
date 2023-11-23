@@ -1,3 +1,5 @@
+import traceback
+
 import scrapy
 
 from google_news.items import googleItem
@@ -35,7 +37,8 @@ class googleSpider(Spider):
                 yield Request(url=url, callback=self.parse)
         else:
             urls = [
-                'https://www.google.com/search?q=pdd&sca_esv=581520105&tbas=0&tbs=qdr:w,sbd:1&tbm=nws&sxsrf=AM9HkKkXb3sBmvO6GPX6Bk-OFf-AauWLOA:1699710999318&ei=F4hPZeqGE5vf2roPk-C5sA4&start=0&sa=N&ved=2ahUKEwiq7tbyjLyCAxWbr1YBHRNwDuY4ChDx0wN6BAgCEAI&biw=1680&bih=825&dpr=2&hl=en'
+                # 'https://www.google.com/search?q=pdd&sca_esv=581520105&tbas=0&tbs=qdr:w,sbd:1&tbm=nws&sxsrf=AM9HkKkXb3sBmvO6GPX6Bk-OFf-AauWLOA:1699710999318&ei=F4hPZeqGE5vf2roPk-C5sA4&start=0&sa=N&ved=2ahUKEwiq7tbyjLyCAxWbr1YBHRNwDuY4ChDx0wN6BAgCEAI&biw=1680&bih=825&dpr=2&hl=en&num=10',
+                'https://www.google.com/search?q=pdd&sca_esv=581520105&tbas=0&tbs=qdr:w,sbd:1&tbm=nws&sxsrf=AM9HkKkXb3sBmvO6GPX6Bk-OFf-AauWLOA:1699710999318&ei=F4hPZeqGE5vf2roPk-C5sA4&start=0&sa=N&ved=2ahUKEwiq7tbyjLyCAxWbr1YBHRNwDuY4ChDx0wN6BAgCEAI&biw=1680&bih=825&dpr=2&hl=zh-CN&num=10',
             ]
             for url in urls:
                 yield Request(url=url, callback=self.parse)
@@ -59,7 +62,10 @@ class googleSpider(Spider):
         if next_btn:
             current_url = response.request.url
             query_dict = parse_qs(urlparse(current_url).query)
-            start_num = int(query_dict['start'][0])
+            if 'start' in query_dict:
+                start_num = int(query_dict['start'][0])
+            else:
+                start_num = 0
             current_page = int(start_num / 10) + 1
             next_url = self.replace_field(current_url, 'start', current_page * 10)
             if current_page <= 4:
@@ -75,50 +81,9 @@ class googleSpider(Spider):
         next_page = urlunparse(new_parse)
         return next_page
 
-    def build_response(self, response):
-        result = response.xpath('//div[@data-hveid]/div/div[@data-ved]')
-
-        results = []
-        for item in result:
-            try:
-                tmp_text = item.xpath('.//a/div/div[2]/div[2]/text()').get().replace("\n", "")
-            except Exception:
-                tmp_text = item.xpath('.//a/div/div/div[2]/text()').get().replace("\n", "")
-
-            try:
-                tmp_desc = item.xpath('.//a/div/div[2]/div[3]/text()').get().replace("\n", "")
-            except Exception:
-                tmp_desc = item.xpath('.//a/div/div/div[3]/text()').get().replace("\n", "")
-
-            try:
-                tmp_link = item.xpath('.//a/@href').get()
-            except Exception:
-                tmp_link = ''
-            try:
-                tmp_author = item.xpath('.//a/div/div[2]/div[1]/span/text()').get().replace("\n", "")
-            except Exception:
-                tmp_author = item.xpath('.//a/div/div/div[1]/span/text()').get().replace("\n", "")
-            try:
-                tmp_date_str = item.xpath('.//div[@style="bottom:0px"]/span/text()').get().replace("\n", "")
-                tmp_date, tmp_datetime = self.lexical_date_parser(tmp_date_str)
-            except Exception:
-                tmp_date = ''
-                tmp_datetime = None
-
-            results.append(
-                {
-                    'title': tmp_text,
-                    'desc': tmp_desc,
-                    'author': tmp_author,
-                    'date': tmp_date,
-                    'datetime': self.define_date(tmp_date),
-                    'link': tmp_link,
-                }
-            )
-        return results
-
-    def define_date(self, date):
-        months = {'Jan': 1, 'Feb': 2, 'Mar': 3, 'Apr': 4, 'May': 5, 'Jun': 6, 'Jul': 7, 'Aug': 8, 'Sep': 9, 'Sept': 9,
+    def en_date_parser(self, date):
+        months = {'Jan': 1, 'Feb': 2, 'Mar': 3, 'Apr': 4, 'May': 5, 'Jun': 6, 'Jul': 7, 'Aug': 8, 'Sep': 9,
+                  'Sept': 9,
                   'Oct': 10, 'Nov': 11, 'Dec': 12, '01': 1, '02': 2, '03': 3, '04': 4, '05': 5, '06': 6, '07': 7,
                   '08': 8,
                   '09': 9, '10': 10, '11': 11, '12': 12}
@@ -148,22 +113,76 @@ class googleSpider(Spider):
         except:
             return float('nan')
 
-    def lexical_date_parser(self, date_to_check):
-        if date_to_check == '':
-            return ('', None)
-        datetime_tmp = None
-        date_tmp = copy.copy(date_to_check)
+    def chinese_date_parser(self, date_str):
         try:
-            datetime_tmp = dateparser.parse(date_tmp)
+            if '前' in date_str.lower():
+                q = int(date_str.split()[0])
+                if '分' in date_str.lower() or '分钟' in date_str.lower():
+                    return datetime.datetime.now() + relativedelta(minutes=-q)
+                elif '小时' in date_str.lower():
+                    return datetime.datetime.now() + relativedelta(hours=-q)
+                elif '天' in date_str.lower():
+                    return datetime.datetime.now() + relativedelta(days=-q)
+                elif '周' in date_str.lower():
+                    return datetime.datetime.now() + relativedelta(days=-7 * q)
+                elif '月' in date_str.lower():
+                    return datetime.datetime.now() + relativedelta(months=-q)
+            elif '昨天' in date_str.lower():
+                return datetime.datetime.now() + relativedelta(days=-1)
+            else:
+                converted_date = datetime.strptime(date_str, '%Y年%m月%d日')
+                return converted_date
         except:
-            date_tmp = None
-            datetime_tmp = None
+            return float('nan')
 
-        if datetime_tmp == None:
-            date_tmp = date_to_check
-        else:
-            datetime_tmp = datetime_tmp.replace(tzinfo=None)
+    def build_response(self, response):
+        result = response.xpath('//div[@data-hveid]/div/div[@data-ved]')
 
-        if date_tmp[0] == ' ':
-            date_tmp = date_tmp[1:]
-        return date_tmp, datetime_tmp
+        results = []
+        for item in result:
+            try:
+                tmp_text = item.xpath('.//a/div/div[2]/div[2]/text()').get().replace("\n", "")
+            except Exception:
+                tmp_text = item.xpath('.//a/div/div/div[2]/text()').get().replace("\n", "")
+
+            try:
+                tmp_desc = item.xpath('.//a/div/div[2]/div[3]/text()').get().replace("\n", "")
+            except Exception:
+                tmp_desc = item.xpath('.//a/div/div/div[3]/text()').get().replace("\n", "")
+
+            try:
+                tmp_link = item.xpath('.//a/@href').get()
+            except Exception:
+                tmp_link = ''
+            try:
+                tmp_author = item.xpath('.//a/div/div[2]/div[1]/span/text()').get().replace("\n", "")
+            except Exception:
+                tmp_author = item.xpath('.//a/div/div/div[1]/span/text()').get().replace("\n", "")
+            try:
+                tmp_date_str = item.xpath('.//div[@style="bottom:0px"]/span/text()').get().replace("\n", "")
+
+                url = response.request.url
+                parse = urlparse(url)
+                query = parse.query
+                query_pair = parse_qs(query)
+                language = query_pair['hl'][0]
+
+                if language == 'en':
+                    pub_datetime = self.en_date_parser(tmp_date_str)
+                else:
+                    pub_datetime = self.chinese_date_parser(tmp_date_str)
+            except Exception:
+                traceback.print_stack()
+                pub_datetime = ''
+
+            results.append(
+                {
+                    'title': tmp_text,
+                    'desc': tmp_desc,
+                    'author': tmp_author,
+                    'datetime': pub_datetime,
+                    'link': tmp_link,
+                }
+            )
+        # 返回所有结果
+        return results
