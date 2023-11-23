@@ -49,13 +49,6 @@ class twitterSpider(Spider):
     ]
 
     def start_requests(self):
-        cookie = self.cookie_helper.get_cookie('.twitter.com')
-        cookie_dict = {}
-        for cookie_pair in cookie.split(';'):
-            key = cookie_pair.split('=')[0]
-            value = cookie_pair.split('=')[1]
-            cookie_dict[key] = value
-
         if self.env == 'online':
             db = MySQLUtil('192.168.1.2', 3366, 'root', 'gw201221', 'pdd')
             self.logger.debug("execute start_requests start query sql")
