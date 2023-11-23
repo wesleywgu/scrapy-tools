@@ -37,7 +37,7 @@ if MACHINE_ENV == 'online':
     }
 else:
     DOWNLOADER_MIDDLEWARES = {
-        # 'misc.middleware.LocalHttpProxyMiddleware': 400,
+        'misc.middleware.LocalHttpProxyMiddleware': 400,
         'misc.middleware.CustomUserAgentMiddleware': 401,
     }
 
