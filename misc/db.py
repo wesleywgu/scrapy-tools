@@ -106,6 +106,9 @@ class MongoDBUtil:
         # print("__del__")
         self.client.close()
 
+    def close(self):
+        self.client.close()
+
     def create_database(self, db_name):
         """创建数据库"""
         return self.client.get_database(db_name)
