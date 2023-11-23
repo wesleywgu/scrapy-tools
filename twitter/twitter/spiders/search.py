@@ -1,3 +1,4 @@
+from queue import Queue
 from random import randint
 from datetime import datetime, timezone, timedelta
 from random import randint
@@ -25,7 +26,27 @@ class twitterSpider(Spider):
     name = "search"
     allowed_domains = ["twitter.com"]
     env = get_project_settings()['MACHINE_ENV']
-    cookie_helper = CookerHelper()
+    cookie_dict = CookerHelper().get_cookie_dict('.twitter.com')
+    all_urls = Queue(maxsize=0)
+
+    dev_urls = [
+        'https://twitter.com/search?q=%23pdd&src=typed_query&f=top',
+        'https://twitter.com/search?q=%23pinduoduo&src=typed_query&f=top',
+        # 'https://twitter.com/search?q=%23temu&src=typed_query&f=top',
+        # 'https://twitter.com/search?q=%23拼多多&src=typed_query&f=top',
+        # 'https://twitter.com/search?q=%23pdd&src=typed_query&f=media',
+        # 'https://twitter.com/search?q=%23pinduoduo&src=typed_query&f=media',
+        # 'https://twitter.com/search?q=%23temu&src=typed_query&f=media',
+        # 'https://twitter.com/search?q=%23拼多多&src=typed_query&f=media',
+        # 'https://twitter.com/search?q=%23pdd&src=typed_query&f=live',
+        # 'https://twitter.com/search?q=%23pinduoduo&src=typed_query&f=live',
+        # 'https://twitter.com/search?q=%23temu&src=typed_query&f=live',
+        # 'https://twitter.com/search?q=%23拼多多&src=typed_query&f=live',
+        # 'https://twitter.com/search?q=pdd&src=typed_query',
+        # 'https://twitter.com/search?q=pinduoduo&src=typed_query',
+        # 'https://twitter.com/search?q=temu&src=typed_query',
+        # 'https://twitter.com/search?q=拼多多&src=typed_query',
+    ]
 
     def start_requests(self):
         cookie = self.cookie_helper.get_cookie('.twitter.com')
@@ -44,29 +65,11 @@ class twitterSpider(Spider):
             for row in results:
                 url = row[0]
                 self.logger.debug(url)
-                yield SeleniumRequest(url=url, callback=self.parse_result, cookies=cookie_dict)
-        else:
-            urls = [
-                'https://twitter.com/search?q=%23pdd&src=typed_query&f=top',
-                # 'https://twitter.com/search?q=%23pinduoduo&src=typed_query&f=top',
-                # 'https://twitter.com/search?q=%23temu&src=typed_query&f=top',
-                # 'https://twitter.com/search?q=%23拼多多&src=typed_query&f=top',
-                # 'https://twitter.com/search?q=%23pdd&src=typed_query&f=media',
-                # 'https://twitter.com/search?q=%23pinduoduo&src=typed_query&f=media',
-                # 'https://twitter.com/search?q=%23temu&src=typed_query&f=media',
-                # 'https://twitter.com/search?q=%23拼多多&src=typed_query&f=media',
-                # 'https://twitter.com/search?q=%23pdd&src=typed_query&f=live',
-                # 'https://twitter.com/search?q=%23pinduoduo&src=typed_query&f=live',
-                # 'https://twitter.com/search?q=%23temu&src=typed_query&f=live',
-                # 'https://twitter.com/search?q=%23拼多多&src=typed_query&f=live',
-                # 'https://twitter.com/search?q=pdd&src=typed_query',
-                # 'https://twitter.com/search?q=pinduoduo&src=typed_query',
-                # 'https://twitter.com/search?q=temu&src=typed_query',
-                # 'https://twitter.com/search?q=拼多多&src=typed_query',
-            ]
-            for url in urls:
-                yield SeleniumRequest(url=url, callback=self.parse_result, cookies=cookie_dict)
+                self.all_urls.put(url)
 
+            yield SeleniumRequest(url=self.all_urls.get(), callback=self.parse_result, cookies=self.cookie_dict)
+        else:
+            yield SeleniumRequest(url=self.dev_urls[0], callback=self.parse_result, cookies=cookie_dict)
 
     def parse_result(self, response):
         browser = response.meta['driver']
@@ -85,6 +88,12 @@ class twitterSpider(Spider):
         for i in final_tweets.values():
             yield i
 
+        if self.env == 'online':
+            if not self.all_urls.empty():
+                url = self.all_urls.get()
+                yield SeleniumRequest(url=url, callback=self.parse_result, cookies=self.cookie_dict)
+        else:
+            yield SeleniumRequest(url=self.dev_urls[1], callback=self.parse_result, cookies=self.cookie_dict)
 
     def scroll_down(self, browser) -> None:
         """Helps to scroll down web page"""
@@ -94,7 +103,6 @@ class twitterSpider(Spider):
                 body.send_keys(Keys.PAGE_DOWN)
         except Exception as ex:
             print("Error at scroll_down method {}".format(ex))
-
 
     def get_tweets(self, browser):
         # 提取数据
