@@ -43,7 +43,7 @@ class baiduSpider(Spider):
                 yield Request(url=url, callback=self.parse)
         else:
             urls = [
-                "https://www.baidu.com/s?tn=news&rtt=4&bsst=1&cl=2&wd=%E6%8B%BC%E5%A4%9A%E5%A4%9A%20%E8%B0%B7%E6%AD%8C%E5%BA%94%E7%94%A8%E5%95%86%E5%BA%97&medium=0&pn=0",
+                "https://www.baidu.com/s?tn=news&rtt=4&bsst=1&cl=2&wd=temu%20malware&medium=0&pn=0",
                 # "https://www.baidu.com/s?tn=news&rtt=4&bsst=1&cl=2&wd=pdd&medium=0&pn=0",
                 # "https://www.baidu.com/s?tn=news&rtt=4&bsst=1&cl=2&wd=pinduoduo&medium=0&pn=0",
                 # "https://www.baidu.com/s?tn=news&rtt=4&bsst=1&cl=2&wd=temu&medium=0&pn=0",
@@ -156,13 +156,6 @@ class baiduSpider(Spider):
                 "cover": cover,
             }
             results.append(result)  # 加入结果
-        # 获取所有页数
-        # pages_ = bs.find("div", id="page").findAll("a")
-        # # 过滤页码
-        # if "< 上一页" in pages_[0].text:
-        #     pages_ = pages_[1:]
-        # if "下一页 >" in pages_[-1].text:
-        #     pages_ = pages_[:-1]
         return {"results": results, "total": total}
 
     def _format(self, string: str) -> str:
