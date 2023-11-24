@@ -19,6 +19,7 @@ if __name__ == "__main__":
         spider_collections = set()
         for collection_name in collection_names:
             if today_collection_name == collection_name:
+                mongo_util.drop_collection(today_collection_name)
                 print('清除历史数据成功，表名：{table_name}'.format(table_name=today_collection_name))
             elif 'results_spider_tools' in collection_name:
                 spider_collections.add(collection_name)
