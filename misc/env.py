@@ -1,26 +1,35 @@
+import json
 import os
+import logging
 from PyCookieCloud import PyCookieCloud
+
+logger = logging.getLogger(__name__)
 
 
 def get_env():
     env = os.environ.get('env', 'dev')
-    print("machine env={}".format(env))
+    logger.info("machine env={}".format(env))
     return env
 
 
 class CookerHelper:
     decrypted_data = None
+    logger = logging.getLogger(__name__)
 
     def __init__(self):
         env = os.environ.get('env', 'dev')
+
         if env == 'online':
-            cookie_cloud = PyCookieCloud('http://192.168.1.2:8088', 'uMTz6qLwhiJrfSEffyC4mb', 'gw201221')
-            self.decrypted_data = cookie_cloud.get_decrypted_data()
-            print('cookie加载成功')
+            url = 'http://192.168.1.2:8088'
         else:
-            cookie_cloud = PyCookieCloud('https://cookie.wesleyan.site', 'uMTz6qLwhiJrfSEffyC4mb', 'gw201221')
-            self.decrypted_data = cookie_cloud.get_decrypted_data()
-            print('cookie加载成功')
+            url = 'https://cookie.wesleyan.site'
+
+        cookie_cloud = PyCookieCloud(url, 'uMTz6qLwhiJrfSEffyC4mb', 'gw201221')
+        self.decrypted_data = cookie_cloud.get_decrypted_data()
+        if self.decrypted_data:
+            self.logger.info('cookie加载成功, cookie=' + json.dumps(self.decrypted_data))
+        else:
+            self.logger.error('cookie加载失败')
 
     def get_cookie(self, domain):
         items = self.decrypted_data[domain]
