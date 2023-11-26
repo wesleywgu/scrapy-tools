@@ -1,4 +1,3 @@
-import re
 import traceback
 
 import scrapy
@@ -18,8 +17,8 @@ from misc.db import MySQLUtil
 from scrapy.utils.project import get_project_settings
 
 
-class googleSearchSpider(Spider):
-    name = "search"
+class googleNewsSpider(Spider):
+    name = "news"
     allowed_domains = ["google.com"]
     env = get_project_settings()['MACHINE_ENV']
 
@@ -28,7 +27,7 @@ class googleSearchSpider(Spider):
             db = MySQLUtil('192.168.1.2', 3366, 'root', 'gw201221', 'pdd')
             self.logger.debug("execute start_requests start query sql")
             results = db.execute(
-                "select channel_url from pdd_monitor_source where name='Google' and channel_url like '%search%' and url_grade between 1 and 3")
+                "select channel_url from pdd_monitor_source where name='Google' and channel_url like '%news%' and url_grade between 1 and 3")
             self.logger.debug("execute start_requests finish query sql")
             for row in results:
                 url = row[0]
@@ -36,7 +35,8 @@ class googleSearchSpider(Spider):
                 yield Request(url=url, callback=self.parse)
         else:
             urls = [
-                'https://www.google.com/search?q=%E6%8B%BC%E5%A4%9A%E5%A4%9A+%E5%8D%A1%E5%B7%B4%E6%96%AF%E5%9F%BA&sca_esv=585373397&biw=1680&bih=826&sxsrf=AM9HkKnvRzgTiM-9GIWw61P_daZPCasX8w%3A1700986382857&ei=Dv5iZc_5M5aehwOWj4CQAw&ved=0ahUKEwjPuPiInOGCAxUWz2EKHZYHADIQ4dUDCBA&uact=5&oq=%E6%8B%BC%E5%A4%9A%E5%A4%9A+%E5%8D%A1%E5%B7%B4%E6%96%AF%E5%9F%BA&gs_lp=Egxnd3Mtd2l6LXNlcnAiFuaLvOWkmuWkmiDljaHlt7Tmlq_ln7oyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsANImQVQAFgAcAF4AZABAJgBAKABAKoBALgBA8gBAOIDBBgAIEGIBgGQBgo&sclient=gws-wiz-serp&hl=zh-CN&start=0'
+                # 'https://www.google.com/search?q=pdd&sca_esv=581520105&tbas=0&tbs=qdr:w,sbd:1&tbm=nws&sxsrf=AM9HkKkXb3sBmvO6GPX6Bk-OFf-AauWLOA:1699710999318&ei=F4hPZeqGE5vf2roPk-C5sA4&start=0&sa=N&ved=2ahUKEwiq7tbyjLyCAxWbr1YBHRNwDuY4ChDx0wN6BAgCEAI&biw=1680&bih=825&dpr=2&hl=en&num=10',
+                'https://www.google.com/search?q=pdd&sca_esv=581520105&tbas=0&tbs=qdr:w,sbd:1&tbm=nws&sxsrf=AM9HkKkXb3sBmvO6GPX6Bk-OFf-AauWLOA:1699710999318&ei=F4hPZeqGE5vf2roPk-C5sA4&start=0&sa=N&ved=2ahUKEwiq7tbyjLyCAxWbr1YBHRNwDuY4ChDx0wN6BAgCEAI&biw=1680&bih=825&dpr=2&hl=zh-CN&num=10',
             ]
             for url in urls:
                 yield Request(url=url, callback=self.parse)
@@ -47,11 +47,7 @@ class googleSearchSpider(Spider):
             google_news = googleItem()
             google_news['content'] = news['title'] + ' ## ' + news['desc']
             google_news['author'] = news['author']
-            if news['datetime'] == '':
-                google_news['pub_time'] = '无'
-            else:
-                google_news['pub_time'] = news['datetime'].strftime("%Y-%m-%d %H:%M:%S")
-
+            google_news['pub_time'] = news['datetime'].strftime("%Y-%m-%d %H:%M:%S")
             google_news['url'] = news['link']
 
             time_now = datetime.datetime.now()
@@ -118,63 +114,50 @@ class googleSearchSpider(Spider):
     def chinese_date_parser(self, date_str):
         try:
             if '前' in date_str.lower():
+                q = int(date_str.split()[0])
                 if '分' in date_str.lower() or '分钟' in date_str.lower():
-                    q = int(date_str.split('分')[0])
                     return datetime.datetime.now() + relativedelta(minutes=-q)
                 elif '小时' in date_str.lower():
-                    q = int(date_str.split('小时')[0])
                     return datetime.datetime.now() + relativedelta(hours=-q)
                 elif '天' in date_str.lower():
-                    q = int(date_str.split('天')[0])
                     return datetime.datetime.now() + relativedelta(days=-q)
                 elif '周' in date_str.lower():
-                    q = int(date_str.split('周')[0])
                     return datetime.datetime.now() + relativedelta(days=-7 * q)
                 elif '月' in date_str.lower():
-                    q = int(date_str.split('月')[0])
                     return datetime.datetime.now() + relativedelta(months=-q)
             elif '昨天' in date_str.lower():
                 return datetime.datetime.now() + relativedelta(days=-1)
             else:
-                converted_date = datetime.datetime.strptime(date_str, '%Y年%m月%d日')
+                converted_date = datetime.strptime(date_str, '%Y年%m月%d日')
                 return converted_date
         except:
             return float('nan')
 
-    def remove_html_tags(self, html):
-        """
-        去除HTML标签
-        """
-        pattern = re.compile(r'<[^>]+>')
-        return pattern.sub('', html)
-
     def build_response(self, response):
-        result = response.xpath('//div[@id="rso"]/div/div')
+        result = response.xpath('//div[@data-hveid]/div/div[@data-ved]')
 
         results = []
         for item in result:
             try:
-                tmp_title = item.xpath('.//div/div[1]/div/div/span/a/h3/text()').get().replace("\n", "")
+                tmp_text = item.xpath('.//a/div/div[2]/div[2]/text()').get().replace("\n", "")
             except Exception:
-                tmp_title = ''
+                tmp_text = item.xpath('.//a/div/div/div[2]/text()').get().replace("\n", "")
 
             try:
-                tmp_desc = item.xpath('.//div/div[2]/div/span[2]').get().replace("\n", "")
-                tmp_desc = self.remove_html_tags(tmp_desc)
+                tmp_desc = item.xpath('.//a/div/div[2]/div[3]/text()').get().replace("\n", "")
             except Exception:
-                tmp_desc = ''
+                tmp_desc = item.xpath('.//a/div/div/div[3]/text()').get().replace("\n", "")
 
             try:
-                tmp_link = item.xpath('.//div/div[1]/div/div/span/a/@href').get()
+                tmp_link = item.xpath('.//a/@href').get()
             except Exception:
                 tmp_link = ''
-
             try:
-                tmp_author = item.xpath('.//div/div[1]/div/div/span/a/div/div/span/text()').get().replace("\n", "")
+                tmp_author = item.xpath('.//a/div/div[2]/div[1]/span/text()').get().replace("\n", "")
             except Exception:
-                tmp_author = ''
+                tmp_author = item.xpath('.//a/div/div/div[1]/span/text()').get().replace("\n", "")
             try:
-                tmp_date_str = item.xpath('.//div/div[2]/div/span[1]/span/text()').get().replace("\n", "")
+                tmp_date_str = item.xpath('.//div[@style="bottom:0px"]/span/text()').get().replace("\n", "")
 
                 url = response.request.url
                 parse = urlparse(url)
@@ -192,7 +175,7 @@ class googleSearchSpider(Spider):
 
             results.append(
                 {
-                    'title': tmp_title,
+                    'title': tmp_text,
                     'desc': tmp_desc,
                     'author': tmp_author,
                     'datetime': pub_datetime,
