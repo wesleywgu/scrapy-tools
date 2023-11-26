@@ -237,7 +237,7 @@ class weibo_searchSpider(Spider):
                                                                                                             '').split(
                         '前')[0]
                 if '转赞人数超过' in created_at:
-                    created_at = created_at.split('转赞人数超过')[0].strip(' ')
+                    created_at = created_at.split('转赞人数超过')[0].strip()
                 weibo['created_at'] = util.standardize_date(created_at)
                 source = sel.xpath('.//div[@class="from"]/a[2]/text()'
                                    ).extract_first()
@@ -317,7 +317,7 @@ class weibo_searchSpider(Spider):
                     retweet_sel[0].xpath('.//p[@class="from"]/a[1]/text()').extract_first().replace(' ', '').replace(
                         '\n', '').split('前')[0]
                     if '转赞人数超过' in created_at:
-                        created_at = created_at.split('转赞人数超过')[0].strip(' ')
+                        created_at = created_at.split('转赞人数超过')[0].strip()
                     retweet['created_at'] = util.standardize_date(created_at)
                     source = retweet_sel[0].xpath(
                         './/p[@class="from"]/a[2]/text()').extract_first()
