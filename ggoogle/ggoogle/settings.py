@@ -1,4 +1,4 @@
-# Scrapy settings for google_news project
+# Scrapy settings for ggoogle project
 #
 # For simplicity, this file contains only the most important settings by
 # default. All the other settings are documented here:
@@ -13,13 +13,13 @@ from os.path import dirname
 path = dirname(dirname(dirname(os.path.abspath((__file__)))))
 sys.path.append(path)
 
-BOT_NAME = 'google_news'
+BOT_NAME = 'ggoogle'
 
-SPIDER_MODULES = ['google_news.spiders']
-NEWSPIDER_MODULE = 'google_news.spiders'
+SPIDER_MODULES = ['ggoogle.spiders']
+NEWSPIDER_MODULE = 'ggoogle.spiders'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-# USER_AGENT = 'google_news (+http://www.yourdomain.com)'
+# USER_AGENT = 'ggoogle (+http://www.yourdomain.com)'
 
 MACHINE_ENV = os.environ.get('env','dev')
 print("machine env={}".format(MACHINE_ENV))
@@ -31,8 +31,8 @@ if MACHINE_ENV == 'online':
     }
 
     ITEM_PIPELINES = {
-        # 'google_news.pipelines.JsonWithEncodingPipeline': 300,
-        # 'google_news.pipelines.RedisPipeline': 301,
+        # 'ggoogle.pipelines.JsonWithEncodingPipeline': 300,
+        # 'ggoogle.pipelines.RedisPipeline': 301,
         'crawlab.CrawlabPipeline': 300,
     }
 else:
@@ -42,8 +42,8 @@ else:
     }
 
     ITEM_PIPELINES = {
-        'google_news.pipelines.JsonWithEncodingPipeline': 300,
-        # 'google_news.pipelines.RedisPipeline': 301,
+        'ggoogle.pipelines.JsonWithEncodingPipeline': 300,
+        # 'ggoogle.pipelines.RedisPipeline': 301,
         # 'crawlab.CrawlabPipeline': 300,
     }
 

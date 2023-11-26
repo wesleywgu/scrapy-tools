@@ -2,7 +2,7 @@ import re
 import traceback
 
 import scrapy
-from google_news.items import googleItem
+from ggoogle.items import googleItem
 from scrapy import Request
 
 try:
