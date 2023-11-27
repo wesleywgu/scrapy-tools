@@ -29,7 +29,7 @@ class githubCommitsSpider(Spider):
                 yesterday_str = (today - timedelta(days=30)).strftime("%Y-%m-%d")
                 url = row[0] + "?tab=overview&from={from_date}&to={to_date}".format(from_date=yesterday_str,
                                                                                     to_date=today_str)
-                self.logger.debug(url)
+                self.logger.info(url)
                 yield scrapy.Request(url=url, callback=self.parse_link_urls)
         else:
             urls = [
