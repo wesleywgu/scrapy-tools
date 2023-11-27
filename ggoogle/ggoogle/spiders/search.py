@@ -188,8 +188,11 @@ class googleSearchSpider(Spider):
                 tmp_desc = item.xpath('.//div/div[2]/div/text()').get().replace("\n", "")
                 tmp_desc = self.remove_html_tags(tmp_desc)
             except Exception:
-                tmp_desc = item.css('div.VwiC3b.yXK7lf.lyLwlc.yDYNvb.W8l4ac.lEBKkf span').get().replace("\n", "")
-                tmp_desc = self.remove_html_tags(tmp_desc)
+                try:
+                    tmp_desc = item.css('div.VwiC3b.yXK7lf.lyLwlc.yDYNvb.W8l4ac.lEBKkf span').get().replace("\n", "")
+                    tmp_desc = self.remove_html_tags(tmp_desc)
+                except Exception:
+                    pass
 
                 try:
                     tmp_desc = item.css(
