@@ -47,7 +47,7 @@ else:
         # 'crawlab.CrawlabPipeline': 300,
     }
 
-LOG_LEVEL = 'DEBUG'
+LOG_LEVEL = 'INFO'
 LOG_STDOUT = True
 ROBOTSTXT_OBEY = False
 DOWNLOAD_DELAY = 10

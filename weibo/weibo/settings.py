@@ -49,7 +49,7 @@ else:
         # 'crawlab.CrawlabPipeline': 300,
     }
 
-LOG_LEVEL = 'DEBUG'
+LOG_LEVEL = 'INFO'
 COOKIES_ENABLED = False
 LOG_STDOUT = True
 ROBOTSTXT_OBEY = False
