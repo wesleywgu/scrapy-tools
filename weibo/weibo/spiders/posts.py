@@ -46,7 +46,7 @@ class UserPostsSpider(scrapy.Spider):
                 url = row[0]
                 uid = url.split('/')[-1]
                 new_url = self.url_template.format(uid=uid)
-                self.logger.debug("old={url}, new_url={new_url}".format(url=url, new_url=new_url))
+                self.logger.info("old={url}, new_url={new_url}".format(url=url, new_url=new_url))
                 yield Request(url=new_url, callback=self.parse)
         else:
             urls = [
