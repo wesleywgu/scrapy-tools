@@ -57,7 +57,7 @@ class twitterSpider(Spider):
             self.logger.debug("execute start_requests finish query sql")
             for row in results:
                 url = row[0]
-                self.logger.debug(url)
+                self.logger.info(url)
                 self.all_urls.put(url)
 
             yield SeleniumRequest(url=self.all_urls.get(), callback=self.parse_result, cookies=self.cookie_dict)
