@@ -13,11 +13,41 @@ import logging as log
 import random
 
 from importlib import import_module
+from scrapy import signals
+import time
 
 from scrapy import signals
 from scrapy.exceptions import NotConfigured
 from scrapy.http import HtmlResponse
 from selenium.webdriver.support.ui import WebDriverWait
+from scrapy.downloadermiddlewares.retry import RetryMiddleware
+from scrapy.utils.response import response_status_message
+
+
+class TooManyRequestsRetryMiddleware(RetryMiddleware):
+
+    def __init__(self, crawler):
+        super(TooManyRequestsRetryMiddleware, self).__init__(crawler.settings)
+        self.crawler = crawler
+
+    @classmethod
+    def from_crawler(cls, crawler):
+        return cls(crawler)
+
+    def process_response(self, request, response, spider):
+        if request.meta.get('dont_retry', False):
+            return response
+        elif response.status == 429:
+            self.crawler.engine.pause()
+            print("速度太快, 暂停60秒")
+            time.sleep(60)  # If the rate limit is renewed in a minute, put 60 seconds, and so on.
+            self.crawler.engine.unpause()
+            reason = response_status_message(response.status)
+            return self._retry(request, reason, spider) or response
+        elif response.status in self.retry_http_codes:
+            reason = response_status_message(response.status)
+            return self._retry(request, reason, spider) or response
+        return response
 
 
 class SeleniumMiddleware:
@@ -267,7 +297,8 @@ class GoogleUserAgentMiddleware(object):
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
             'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8,en-US;q=0.7',
         }
-        request.headers['User-Agent'] = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36'
+        request.headers[
+            'User-Agent'] = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36'
         request.headers['Accept'] = DEFAULT_REQUEST_HEADERS['Accept']
         request.headers['Accept-Language'] = DEFAULT_REQUEST_HEADERS['Accept-Language']
         request.headers['Cookie'] = self.cookie_helper.get_cookie('.google.com')

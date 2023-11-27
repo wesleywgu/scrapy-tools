@@ -28,6 +28,7 @@ if MACHINE_ENV == 'online':
     DOWNLOADER_MIDDLEWARES = {
         # 'misc.middleware.LocalHttpProxyMiddleware': 400,
         'misc.middleware.CustomUserAgentMiddleware': 401,
+        'misc.middleware.TooManyRequestsRetryMiddleware': 402,
     }
 
     ITEM_PIPELINES = {
@@ -39,6 +40,7 @@ else:
     DOWNLOADER_MIDDLEWARES = {
         'misc.middleware.LocalHttpProxyMiddleware': 400,
         'misc.middleware.CustomUserAgentMiddleware': 401,
+        'misc.middleware.TooManyRequestsRetryMiddleware': 402,
     }
 
     ITEM_PIPELINES = {
@@ -52,3 +54,5 @@ LOG_STDOUT = True
 ROBOTSTXT_OBEY = False
 DOWNLOAD_DELAY = 10
 AUTOTHROTTLE_ENABLED = True
+RETRY_HTTP_CODES = [429, 500, 403]  # 这个状态重试
+RANDOMIZE_DOWNLOAD_DELAY = True   # 发完一个请求 随机暂停一下 在发下一个请求
