@@ -25,14 +25,29 @@ if __name__ == "__main__":
                 spider_collections.add(collection_name)
 
         # 查询今天发布的文章
-        tmp_time = datetime.now().replace(hour=9, minute=0, second=0, microsecond=0)
-        start_time = tmp_time - timedelta(days=1)  # 昨日9点
+        today_time = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+        start_time = datetime.now().replace(hour=9, minute=0, second=0, microsecond=0) - timedelta(days=1)  # 昨日9点
         end_time = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0) + timedelta(days=1)
         query = {
-            'pub_time': {
-                "$gte": start_time.isoformat(),  # 大于等于昨天的开始时间
-                "$lt": end_time.isoformat()  # 小于今天的开始时间
-            }
+            '$or': [
+                {
+                    'pub_time': {
+                        "$gte": start_time.isoformat(),  # 大于等于昨天的开始时间
+                        "$lt": end_time.isoformat()  # 小于今天的开始时间
+                    }
+                },
+                {
+                    '$and': [
+                        {'pub_time': "无"},
+                        {
+                            'craw_time': {
+                                "$gte": today_time.isoformat(),
+                                "$lt": end_time.isoformat()
+                            }
+                        },
+                    ]
+                }
+            ]
         }
 
         print(f'开始查询, 时间范围：【{start_time},{end_time}】...'.format(start_time=start_time, end_time=end_time))

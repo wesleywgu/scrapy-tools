@@ -38,7 +38,8 @@ class googleSearchSpider(Spider):
             urls = [
                 # 'https://www.google.com/search?q=pdd&sca_esv=585373397&biw=1680&bih=826&sxsrf=AM9HkKnvRzgTiM-9GIWw61P_daZPCasX8w%3A1700986382857&ei=Dv5iZc_5M5aehwOWj4CQAw&ved=0ahUKEwjPuPiInOGCAxUWz2EKHZYHADIQ4dUDCBA&uact=5&oq=%E6%8B%BC%E5%A4%9A%E5%A4%9A+%E5%8D%A1%E5%B7%B4%E6%96%AF%E5%9F%BA&gs_lp=Egxnd3Mtd2l6LXNlcnAiFuaLvOWkmuWkmiDljaHlt7Tmlq_ln7oyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsANImQVQAFgAcAF4AZABAJgBAKABAKoBALgBA8gBAOIDBBgAIEGIBgGQBgo&sclient=gws-wiz-serp&hl=zh-CN&type=gsearch&lr=lang_zh-CN'
                 # 'https://www.google.com/search?q=%E6%8B%BC%E5%A4%9A%E5%A4%9A+%E5%8D%A1%E5%B7%B4%E6%96%AF%E5%9F%BA&oq=%E6%8B%BC%E5%A4%9A%E5%A4%9A+%E5%8D%A1%E5%B7%B4&gs_lcrp=EgZjaHJvbWUqDAgBECMYJxiABBiKBTIGCAAQRRg5MgwIARAjGCcYgAQYigUyBwgCEAAYgAQyCQgDEAAYDBiABDIGCAQQABgeMgYIBRBFGDwyBggGEEUYPDIGCAcQRRg80gEIODE5M2owajeoAgCwAgA&sourceid=chrome&ie=UTF-8&&hl=zh-CN',
-                'https://www.google.com/search?q=%E6%8B%BC%E5%A4%9A%E5%A4%9A&sca_esv=585373397&biw=1680&bih=826&sxsrf=AM9HkKnvRzgTiM-9GIWw61P_daZPCasX8w%3A1700986382857&ei=Dv5iZc_5M5aehwOWj4CQAw&ved=0ahUKEwjPuPiInOGCAxUWz2EKHZYHADIQ4dUDCBA&uact=5&oq=%E6%8B%BC%E5%A4%9A%E5%A4%9A+%E5%8D%A1%E5%B7%B4%E6%96%AF%E5%9F%BA&gs_lp=Egxnd3Mtd2l6LXNlcnAiFuaLvOWkmuWkmiDljaHlt7Tmlq_ln7oyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsANImQVQAFgAcAF4AZABAJgBAKABAKoBALgBA8gBAOIDBBgAIEGIBgGQBgo&sclient=gws-wiz-serp&hl=zh-CN&type=gsearch',
+                # 'https://www.google.com/search?q=%E6%8B%BC%E5%A4%9A%E5%A4%9A&sca_esv=585373397&biw=1680&bih=826&sxsrf=AM9HkKnvRzgTiM-9GIWw61P_daZPCasX8w%3A1700986382857&ei=Dv5iZc_5M5aehwOWj4CQAw&ved=0ahUKEwjPuPiInOGCAxUWz2EKHZYHADIQ4dUDCBA&uact=5&oq=%E6%8B%BC%E5%A4%9A%E5%A4%9A+%E5%8D%A1%E5%B7%B4%E6%96%AF%E5%9F%BA&gs_lp=Egxnd3Mtd2l6LXNlcnAiFuaLvOWkmuWkmiDljaHlt7Tmlq_ln7oyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsANImQVQAFgAcAF4AZABAJgBAKABAKoBALgBA8gBAOIDBBgAIEGIBgGQBgo&sclient=gws-wiz-serp&hl=zh-CN&type=gsearch',
+                'https://www.google.com/search?q=拼多多 CISA&sca_esv=585373397&biw=1680&bih=826&sxsrf=AM9HkKnvRzgTiM-9GIWw61P_daZPCasX8w%3A1700986382857&ei=Dv5iZc_5M5aehwOWj4CQAw&ved=0ahUKEwjPuPiInOGCAxUWz2EKHZYHADIQ4dUDCBA&uact=5&oq=%E6%8B%BC%E5%A4%9A%E5%A4%9A+%E5%8D%A1%E5%B7%B4%E6%96%AF%E5%9F%BA&gs_lp=Egxnd3Mtd2l6LXNlcnAiFuaLvOWkmuWkmiDljaHlt7Tmlq_ln7oyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsANImQVQAFgAcAF4AZABAJgBAKABAKoBALgBA8gBAOIDBBgAIEGIBgGQBgo&sclient=gws-wiz-serp&hl=zh-CN&type=gsearch',
             ]
             for url in urls:
                 yield Request(url=url, callback=self.parse)
@@ -181,7 +182,6 @@ class googleSearchSpider(Spider):
                 else:
                     pub_datetime = self.chinese_date_parser(tmp_date_str)
             except Exception:
-                traceback.print_stack()
                 pub_datetime = ''
 
             try:
