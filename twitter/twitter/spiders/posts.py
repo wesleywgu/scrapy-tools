@@ -40,7 +40,7 @@ class twitterSpider(Spider):
             db = MySQLUtil('192.168.1.2', 3366, 'root', 'gw201221', 'pdd')
             self.logger.debug("execute start_requests start query sql")
             results = db.execute(
-                "select channel_url from pdd_monitor_source where channel='Twitter' and name <> 'Twitter' and url_grade between 1 and 3")
+                "select channel_url from pdd_monitor_source where channel='Twitter' and name <> 'Twitter' and url_grade between 1 and 2")
             self.logger.debug("execute start_requests finish query sql")
             for row in results:
                 url = row[0]
