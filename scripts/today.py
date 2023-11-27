@@ -1,3 +1,4 @@
+import json
 import os
 import sys
 import traceback
@@ -32,8 +33,8 @@ if __name__ == "__main__":
             '$or': [
                 {
                     'pub_time': {
-                        "$gte": start_time.isoformat(),  # 大于等于昨天的开始时间
-                        "$lt": end_time.isoformat()  # 小于今天的开始时间
+                        "$gte": start_time.strftime("%Y-%m-%d %H:%M:%S"),  # 大于等于昨天的开始时间
+                        "$lt": end_time.strftime("%Y-%m-%d %H:%M:%S")  # 小于今天的开始时间
                     }
                 },
                 {
@@ -41,8 +42,8 @@ if __name__ == "__main__":
                         {'pub_time': "无"},
                         {
                             'craw_time': {
-                                "$gte": today_time.isoformat(),
-                                "$lt": end_time.isoformat()
+                                "$gte": today_time.strftime("%Y-%m-%d %H:%M:%S"),
+                                "$lt": end_time.strftime("%Y-%m-%d %H:%M:%S")
                             }
                         },
                     ]
@@ -51,6 +52,7 @@ if __name__ == "__main__":
         }
 
         print(f'开始查询, 时间范围：【{start_time},{end_time}】...'.format(start_time=start_time, end_time=end_time))
+        print('查询条件：' + json.dumps(query))
         all_cnt = 0
         for name in spider_collections:
             rows = mongo_util.find(name, query)
