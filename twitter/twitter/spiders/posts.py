@@ -80,7 +80,7 @@ class twitterSpider(Spider):
             body = browser.find_element(By.CSS_SELECTOR, 'body')
             for _ in range(randint(1, 3)):
                 body.send_keys(Keys.PAGE_DOWN)
-                self.logger.info("process_request scroll_down, url= %s" % url)
+                self.logger.debug("process_request scroll_down, url= %s" % url)
         except Exception as ex:
             self.logger.error("Error at scroll_down method {}".format(ex))
 
