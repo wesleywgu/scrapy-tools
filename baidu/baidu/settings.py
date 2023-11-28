@@ -6,13 +6,20 @@
 #     http://doc.scrapy.org/en/latest/topics/settings.html
 #
 
-import sys
 import os
+import sys
 from os.path import dirname
 
 path = dirname(dirname(os.path.abspath(os.path.dirname(__file__))))
 sys.path.append(path)
-from misc.log import *
+import scrapy.utils.misc
+import scrapy.core.scraper
+
+def warn_on_generator_with_return_value_stub(spider, callable):
+    pass
+
+scrapy.utils.misc.warn_on_generator_with_return_value = warn_on_generator_with_return_value_stub
+scrapy.core.scraper.warn_on_generator_with_return_value = warn_on_generator_with_return_value_stub
 
 BOT_NAME = 'baidu'
 
