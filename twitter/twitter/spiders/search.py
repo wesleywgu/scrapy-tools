@@ -16,7 +16,7 @@ try:
 except:
     from scrapy.spiders import BaseSpider as Spider
 
-from misc.requests import SeleniumRequest
+from misc.reqs import SeleniumRequest
 from scrapy.utils.project import get_project_settings
 
 from misc.env import CookerHelper

@@ -36,7 +36,7 @@ print("machine env={}".format(MACHINE_ENV))
 
 if MACHINE_ENV == 'online':
     DOWNLOADER_MIDDLEWARES = {
-        # 'misc.middleware.CustomHttpProxyMiddleware': 399,
+        'misc.middleware.CustomHttpsProxyMiddleware': 399,
         'misc.middleware.TooManyRequestsRetryMiddleware': 400,
         'misc.middleware.BaiduUserAgentMiddleware': 401,
 
@@ -49,7 +49,7 @@ if MACHINE_ENV == 'online':
     }
 else:
     DOWNLOADER_MIDDLEWARES = {
-        # 'misc.middleware.CustomHttpProxyMiddleware': 400,
+        'misc.middleware.CustomHttpsProxyMiddleware': 400,
         'misc.middleware.BaiduUserAgentMiddleware': 401,
 
     }
