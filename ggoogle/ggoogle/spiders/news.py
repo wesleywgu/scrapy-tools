@@ -36,7 +36,8 @@ class googleNewsSpider(Spider):
         else:
             urls = [
                 # 'https://www.google.com/search?q=pdd&sca_esv=581520105&tbas=0&tbs=qdr:w,sbd:1&tbm=nws&sxsrf=AM9HkKkXb3sBmvO6GPX6Bk-OFf-AauWLOA:1699710999318&ei=F4hPZeqGE5vf2roPk-C5sA4&start=0&sa=N&ved=2ahUKEwiq7tbyjLyCAxWbr1YBHRNwDuY4ChDx0wN6BAgCEAI&biw=1680&bih=825&dpr=2&hl=en&num=10',
-                'https://www.google.com/search?q=pdd&sca_esv=581520105&tbas=0&tbs=qdr:w,sbd:1&tbm=nws&sxsrf=AM9HkKkXb3sBmvO6GPX6Bk-OFf-AauWLOA:1699710999318&ei=F4hPZeqGE5vf2roPk-C5sA4&start=0&sa=N&ved=2ahUKEwiq7tbyjLyCAxWbr1YBHRNwDuY4ChDx0wN6BAgCEAI&biw=1680&bih=825&dpr=2&hl=zh-CN&num=10',
+                # 'https://www.google.com/search?q=pdd&sca_esv=581520105&tbas=0&tbs=qdr:w,sbd:1&tbm=nws&sxsrf=AM9HkKkXb3sBmvO6GPX6Bk-OFf-AauWLOA:1699710999318&ei=F4hPZeqGE5vf2roPk-C5sA4&start=0&sa=N&ved=2ahUKEwiq7tbyjLyCAxWbr1YBHRNwDuY4ChDx0wN6BAgCEAI&biw=1680&bih=825&dpr=2&hl=zh-CN&num=10',
+                'https://www.google.com/search?q=pdd&sca_esv=581520105&tbas=0&tbs=qdr:w,sbd:1&tbm=nws&sxsrf=AM9HkKkXb3sBmvO6GPX6Bk-OFf-AauWLOA:1699710999318&ei=F4hPZeqGE5vf2roPk-C5sA4&sa=N&ved=2ahUKEwiq7tbyjLyCAxWbr1YBHRNwDuY4ChDx0wN6BAgCEAI&biw=1680&bih=825&dpr=2&hl=en&start=0&type=news',
             ]
             for url in urls:
                 yield Request(url=url, callback=self.parse)
@@ -86,7 +87,7 @@ class googleNewsSpider(Spider):
                   '08': 8,
                   '09': 9, '10': 10, '11': 11, '12': 12}
         try:
-            if ' ago' in date.lower():
+            if 'ago' in date.lower():
                 q = int(date.split()[-3])
                 if 'minutes' in date.lower() or 'mins' in date.lower():
                     return datetime.datetime.now() + relativedelta(minutes=-q)
@@ -108,8 +109,8 @@ class googleNewsSpider(Spider):
                     if date_list[0] == '':
                         date_list[0] = '1'
                 return datetime.datetime(day=int(date_list[0]), month=months[date_list[1]], year=int(date_list[2]))
-        except:
-            return float('nan')
+        except Exception as ex:
+            traceback.print_stack()
 
     def chinese_date_parser(self, date_str):
         try:
