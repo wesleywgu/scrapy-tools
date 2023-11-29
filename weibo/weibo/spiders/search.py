@@ -81,19 +81,19 @@ class weibo_searchSpider(Spider):
                         if num <= 5:  # 最多爬取5页
                             yield scrapy.Request(url=next_url, callback=self.parse)
 
-    def get_ip(self, bid):
-        url = f"https://weibo.com/ajax/statuses/show?id={bid}&locale=zh-CN"
-        response = requests.get(url, headers=self.settings.get('DEFAULT_REQUEST_HEADERS'))
-        if response.status_code != 200:
-            return ""
-        try:
-            data = response.json()
-        except requests.exceptions.JSONDecodeError:
-            return ""
-        ip_str = data.get("region_name", "")
-        if ip_str:
-            ip_str = ip_str.split()[-1]
-        return ip_str
+    # def get_ip(self, bid):
+    #     url = f"https://weibo.com/ajax/statuses/show?id={bid}&locale=zh-CN"
+    #     response = requests.get(url, headers=self.settings.get('DEFAULT_REQUEST_HEADERS'))
+    #     if response.status_code != 200:
+    #         return ""
+    #     try:
+    #         data = response.json()
+    #     except requests.exceptions.JSONDecodeError:
+    #         return ""
+    #     ip_str = data.get("region_name", "")
+    #     if ip_str:
+    #         ip_str = ip_str.split()[-1]
+    #     return ip_str
 
     def get_article_url(self, selector):
         """获取微博头条文章url"""
@@ -327,7 +327,7 @@ class weibo_searchSpider(Spider):
                     retweet['video_url'] = video_url
                     retweet['retweet_id'] = ''
                     weibo['retweet_id'] = retweet['id']
-                weibo["ip"] = self.get_ip(bid)
+                # weibo["ip"] = self.get_ip(bid)
 
                 if 'text' in retweet:
                     weibo['text'] = weibo['text'] + ', 转发:' + retweet['text']

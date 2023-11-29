@@ -48,7 +48,10 @@ class googleNewsSpider(Spider):
             google_news = googleItem()
             google_news['content'] = news['title'] + ' ## ' + news['desc']
             google_news['author'] = news['author']
-            google_news['pub_time'] = news['datetime'].strftime("%Y-%m-%d %H:%M:%S")
+            if 'datetime' in news:
+                google_news['pub_time'] = news['datetime'].strftime("%Y-%m-%d %H:%M:%S")
+            else:
+                google_news['pub_time'] = '无'
             google_news['url'] = news['link']
 
             time_now = datetime.datetime.now()
