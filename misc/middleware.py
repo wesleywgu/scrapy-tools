@@ -25,7 +25,6 @@ from scrapy.utils.response import response_status_message
 
 
 class TooManyRequestsRetryMiddleware(RetryMiddleware):
-
     def __init__(self, crawler):
         super(TooManyRequestsRetryMiddleware, self).__init__(crawler.settings)
         self.crawler = crawler
@@ -39,7 +38,7 @@ class TooManyRequestsRetryMiddleware(RetryMiddleware):
             return response
         elif response.status == 429:
             self.crawler.engine.pause()
-            print("速度太快, 暂停60秒")
+            print("Response code is {code} Craw too fast, pase 60 seconds".format(code=response.status))
             time.sleep(60)  # If the rate limit is renewed in a minute, put 60 seconds, and so on.
             self.crawler.engine.unpause()
             reason = response_status_message(response.status)

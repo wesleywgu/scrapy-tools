@@ -15,8 +15,10 @@ sys.path.append(path)
 import scrapy.utils.misc
 import scrapy.core.scraper
 
+
 def warn_on_generator_with_return_value_stub(spider, callable):
     pass
+
 
 scrapy.utils.misc.warn_on_generator_with_return_value = warn_on_generator_with_return_value_stub
 scrapy.core.scraper.warn_on_generator_with_return_value = warn_on_generator_with_return_value_stub
@@ -34,7 +36,8 @@ print("machine env={}".format(MACHINE_ENV))
 
 if MACHINE_ENV == 'online':
     DOWNLOADER_MIDDLEWARES = {
-        # 'misc.middleware.CustomHttpProxyMiddleware': 400,
+        # 'misc.middleware.CustomHttpProxyMiddleware': 399,
+        'misc.middleware.TooManyRequestsRetryMiddleware': 400,
         'misc.middleware.BaiduUserAgentMiddleware': 401,
 
     }
@@ -62,3 +65,4 @@ LOG_STDOUT = True
 ROBOTSTXT_OBEY = False
 DOWNLOAD_DELAY = 10
 AUTOTHROTTLE_ENABLED = True
+RETRY_HTTP_CODES = [302]
