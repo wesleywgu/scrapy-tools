@@ -35,7 +35,7 @@ class weibo_searchSpider(Spider):
             self.logger.debug("execute start_requests finish query sql")
             for row in results:
                 url = row[0]
-                self.logger.debug(url)
+                self.logger.info('需要爬取的链接' + url)
                 yield Request(url=url, callback=self.parse)
         else:
             urls = [
@@ -314,8 +314,9 @@ class weibo_searchSpider(Spider):
                     retweet['attitudes_count'] = attitudes_count[
                         0] if attitudes_count else '0'
                     created_at = \
-                    retweet_sel[0].xpath('.//p[@class="from"]/a[1]/text()').extract_first().replace(' ', '').replace(
-                        '\n', '').split('前')[0]
+                        retweet_sel[0].xpath('.//p[@class="from"]/a[1]/text()').extract_first().replace(' ',
+                                                                                                        '').replace(
+                            '\n', '').split('前')[0]
                     if '转赞人数超过' in created_at:
                         created_at = created_at.split('转赞人数超过')[0].strip()
                     retweet['created_at'] = util.standardize_date(created_at)
