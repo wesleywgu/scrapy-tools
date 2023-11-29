@@ -27,7 +27,7 @@ if __name__ == "__main__":
 
         # 查询今天发布的文章
         today_time = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
-        start_time = datetime.now().replace(hour=9, minute=0, second=0, microsecond=0) - timedelta(days=1)  # 昨日9点
+        start_time = datetime.now().replace(hour=10, minute=0, second=0, microsecond=0) - timedelta(days=1)  # 昨日10点
         end_time = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0) + timedelta(days=1)
         query = {
             '$or': [
