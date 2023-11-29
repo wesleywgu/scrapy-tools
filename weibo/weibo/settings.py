@@ -23,7 +23,7 @@ NEWSPIDER_MODULE = 'weibo.spiders'
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 # USER_AGENT = 'weibo (+http://www.yourdomain.com)'
 
-MACHINE_ENV = os.environ.get('env','dev')
+MACHINE_ENV = os.environ.get('env', 'dev')
 print("machine env={}".format(MACHINE_ENV))
 
 if MACHINE_ENV == 'online':
@@ -40,6 +40,7 @@ if MACHINE_ENV == 'online':
 else:
     DOWNLOADER_MIDDLEWARES = {
         # 'misc.middleware.CustomHttpProxyMiddleware': 400,
+        'misc.middleware.TooManyRequestsRetryMiddleware': 400,
         'misc.middleware.WeiboUserAgentMiddleware': 401,
     }
 

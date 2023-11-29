@@ -35,7 +35,7 @@ class weibo_searchSpider(Spider):
             self.logger.debug("execute start_requests finish query sql")
             for row in results:
                 url = row[0]
-                self.logger.info('需要爬取的链接' + url)
+                self.logger.info(url)
                 yield Request(url=url, callback=self.parse)
         else:
             urls = [

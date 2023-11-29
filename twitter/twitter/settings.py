@@ -64,6 +64,7 @@ SELENIUM_DRIVER_ARGUMENTS = [
     '--headless',
     '--no-sandbox',
     '--disable-dev-shm-usage',
+    '--disable-gpu',
     # '--proxy-server=%s' % '127.0.0.1:7890',
     '--user-agent=%s' % 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.50 Safari/537.36'
 ]
