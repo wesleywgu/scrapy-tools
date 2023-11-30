@@ -10,7 +10,8 @@ from misc.db import MongoDBUtil
 from crawlab import save_item
 
 if __name__ == "__main__":
-    today_collection_name = 'results_spider_tools.scripts.today'
+    today_collection_name = 'results_scrapy_tools.scripts.today'
+    collection_prefix = "results_scrapy_tools"
 
     mongo_util = MongoDBUtil(ip="192.168.1.2", db_name="crawlab", port="27017")
 
@@ -22,7 +23,7 @@ if __name__ == "__main__":
             if today_collection_name == collection_name:
                 mongo_util.drop_collection(today_collection_name)
                 print('清除历史数据成功，表名：{table_name}'.format(table_name=today_collection_name))
-            elif 'results_spider_tools' in collection_name:
+            elif collection_prefix in collection_name:
                 spider_collections.add(collection_name)
 
         # 查询今天发布的文章
