@@ -22,7 +22,6 @@ NEWSPIDER_MODULE = 'ggoogle.spiders'
 # USER_AGENT = 'ggoogle (+http://www.yourdomain.com)'
 
 MACHINE_ENV = os.environ.get('env','dev')
-print("machine env={}".format(MACHINE_ENV))
 
 if MACHINE_ENV == 'online':
     DOWNLOADER_MIDDLEWARES = {

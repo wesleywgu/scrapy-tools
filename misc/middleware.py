@@ -197,7 +197,7 @@ class CustomHttpsProxyMiddleware(object):
             p = get_https_proxy()
             try:
                 request.meta['proxy'] = "https://%s" % p['proxy']
-                log.info("https proxy=" + json.dumps(p))
+                log.debug("https proxy=" + json.dumps(p))
             except Exception as e:
                 log.critical("Exception %s" % e)
 

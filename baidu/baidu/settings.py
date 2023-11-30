@@ -32,7 +32,6 @@ NEWSPIDER_MODULE = 'baidu.spiders'
 # USER_AGENT = 'baidu (+http://www.yourdomain.com)'
 
 MACHINE_ENV = os.environ.get('env', 'dev')
-print("machine env={}".format(MACHINE_ENV))
 
 if MACHINE_ENV == 'online':
     DOWNLOADER_MIDDLEWARES = {
@@ -49,7 +48,7 @@ if MACHINE_ENV == 'online':
     }
 else:
     DOWNLOADER_MIDDLEWARES = {
-        'misc.middleware.CustomHttpsProxyMiddleware': 400,
+        # 'misc.middleware.CustomHttpsProxyMiddleware': 400,
         'misc.middleware.BaiduUserAgentMiddleware': 401,
 
     }

@@ -12,4 +12,3 @@ dateparser~=1.1.8
 python-dateutil~=2.8.2
 apollo-python-client==0.0.1
 PyCookieCloud==1.0.3
-PyCookieCloud
