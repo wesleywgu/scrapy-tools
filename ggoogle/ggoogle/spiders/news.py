@@ -19,8 +19,10 @@ from scrapy.utils.project import get_project_settings
 import scrapy.utils.misc
 import scrapy.core.scraper
 
+
 def warn_on_generator_with_return_value_stub(spider, callable):
     pass
+
 
 scrapy.utils.misc.warn_on_generator_with_return_value = warn_on_generator_with_return_value_stub
 scrapy.core.scraper.warn_on_generator_with_return_value = warn_on_generator_with_return_value_stub
@@ -55,7 +57,7 @@ class googleNewsSpider(Spider):
         news_list = self.build_response(response)
         for news in news_list:
             google_news = googleItem()
-            google_news['content'] = news['title'] + ' ## ' + news['desc']
+            google_news['content'] = '标题：{title}\n 内容：{content}'.format(title=news['title'], content=news['desc'])
             google_news['author'] = news['author']
             if 'datetime' in news:
                 google_news['pub_time'] = news['datetime'].strftime("%Y-%m-%d %H:%M:%S")

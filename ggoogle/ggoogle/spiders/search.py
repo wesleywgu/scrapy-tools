@@ -48,7 +48,7 @@ class googleSearchSpider(Spider):
         news_list = self.build_response(response)
         for news in news_list:
             google_news = googleItem()
-            google_news['content'] = news['title'] + ' ## ' + news['desc']
+            google_news['content'] = '标题：{title}\n 内容：{content}'.format(title=news['title'], content=news['desc'])
             google_news['author'] = news['author']
             if news['datetime'] == '':
                 google_news['pub_time'] = '无'

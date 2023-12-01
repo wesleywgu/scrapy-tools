@@ -64,7 +64,7 @@ class baiduSpider(Spider):
             else:
                 i['pub_time'] = '无'
             i['url'] = news['url']
-            i['content'] = news['title'] + " ## " + news['des']
+            i['content'] = '标题：{title}\n 内容：{content}'.format(title=news['title'], content=news['des'])
 
             time_now = datetime.now()
             current_time = time_now.strftime("%Y-%m-%d %H:%M:%S")
