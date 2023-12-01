@@ -37,18 +37,19 @@ if __name__ == "__main__":
                         "$gte": start_time.strftime("%Y-%m-%d %H:%M:%S"),  # 大于等于昨天的开始时间
                         "$lt": end_time.strftime("%Y-%m-%d %H:%M:%S")  # 小于今天的开始时间
                     }
-                },
-                {
-                    '$and': [
-                        {'pub_time': "无"},
-                        {
-                            'craw_time': {
-                                "$gte": today_time.strftime("%Y-%m-%d %H:%M:%S"),
-                                "$lt": end_time.strftime("%Y-%m-%d %H:%M:%S")
-                            }
-                        },
-                    ]
                 }
+                # ,
+                # {
+                #     '$and': [
+                #         {'pub_time': "无"},
+                #         {
+                #             'craw_time': {
+                #                 "$gte": today_time.strftime("%Y-%m-%d %H:%M:%S"),
+                #                 "$lt": end_time.strftime("%Y-%m-%d %H:%M:%S")
+                #             }
+                #         },
+                #     ]
+                # }
             ]
         }
 
