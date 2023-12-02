@@ -58,7 +58,7 @@ class githubSearchSpider(Spider):
             # 格式化为指定格式的字符串
             last_update = china_time.strftime("%Y-%m-%d %H:%M:%S")
 
-            url = card.css('a.Link__StyledLink-sc-14289xe-0.Tkjro::attr(href)').get()
+            url = card.css('div.search-title a::attr(href)').get()
             repo_name = url.strip('/')
 
             i = githubItem()
