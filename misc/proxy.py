@@ -25,6 +25,7 @@ FREE_PROXIES = [
 ]
 
 
+# 代理池：https://github.com/jhao104/proxy_pool
 def get_https_proxy():
     env = get_env()
     if env == 'online':
