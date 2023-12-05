@@ -46,9 +46,10 @@ class googleNewsSpider(Spider):
                 yield Request(url=url, callback=self.parse)
         else:
             urls = [
+                'https://www.google.com/search?q=pinduoduo&sca_esv=581520105&tbas=0&tbs=qdr%3Aw%2Csbd%3A1&tbm=nws&sxsrf=AM9HkKkXb3sBmvO6GPX6Bk-OFf-AauWLOA%3A1699710999318&ei=F4hPZeqGE5vf2roPk-C5sA4&sa=N&ved=2ahUKEwiq7tbyjLyCAxWbr1YBHRNwDuY4ChDx0wN6BAgCEAI&biw=1680&bih=825&dpr=2&hl=zh-CN&start=40&type=news',
                 # 'https://www.google.com/search?q=pdd&sca_esv=581520105&tbas=0&tbs=qdr:w,sbd:1&tbm=nws&sxsrf=AM9HkKkXb3sBmvO6GPX6Bk-OFf-AauWLOA:1699710999318&ei=F4hPZeqGE5vf2roPk-C5sA4&start=0&sa=N&ved=2ahUKEwiq7tbyjLyCAxWbr1YBHRNwDuY4ChDx0wN6BAgCEAI&biw=1680&bih=825&dpr=2&hl=en&num=10',
                 # 'https://www.google.com/search?q=pdd&sca_esv=581520105&tbas=0&tbs=qdr:w,sbd:1&tbm=nws&sxsrf=AM9HkKkXb3sBmvO6GPX6Bk-OFf-AauWLOA:1699710999318&ei=F4hPZeqGE5vf2roPk-C5sA4&start=0&sa=N&ved=2ahUKEwiq7tbyjLyCAxWbr1YBHRNwDuY4ChDx0wN6BAgCEAI&biw=1680&bih=825&dpr=2&hl=zh-CN&num=10',
-                'https://www.google.com/search?q=pdd&sca_esv=581520105&tbas=0&tbs=qdr:w,sbd:1&tbm=nws&sxsrf=AM9HkKkXb3sBmvO6GPX6Bk-OFf-AauWLOA:1699710999318&ei=F4hPZeqGE5vf2roPk-C5sA4&sa=N&ved=2ahUKEwiq7tbyjLyCAxWbr1YBHRNwDuY4ChDx0wN6BAgCEAI&biw=1680&bih=825&dpr=2&hl=en&start=0&type=news',
+                # 'https://www.google.com/search?q=pdd&sca_esv=581520105&tbas=0&tbs=qdr:w,sbd:1&tbm=nws&sxsrf=AM9HkKkXb3sBmvO6GPX6Bk-OFf-AauWLOA:1699710999318&ei=F4hPZeqGE5vf2roPk-C5sA4&sa=N&ved=2ahUKEwiq7tbyjLyCAxWbr1YBHRNwDuY4ChDx0wN6BAgCEAI&biw=1680&bih=825&dpr=2&hl=en&start=0&type=news',
             ]
             for url in urls:
                 yield Request(url=url, callback=self.parse)
@@ -154,14 +155,38 @@ class googleNewsSpider(Spider):
         results = []
         for item in result:
             try:
-                tmp_text = item.xpath('.//a/div/div[2]/div[2]/text()').get().replace("\n", "")
+                tmp_title = item.xpath('.//a/div/div[2]/div[2]/text()').get().replace("\n", "")
             except Exception:
-                tmp_text = item.xpath('.//a/div/div/div[2]/text()').get().replace("\n", "")
+                tmp_title = ''
+
+            if tmp_title == '':
+                try:
+                    tmp_title = item.xpath('.//a/div/div/div[2]/text()').get().replace("\n", "")
+                except Exception:
+                    tmp_title = ''
+
+            if tmp_title == '':
+                try:
+                    tmp_title = item.xpath('.//a/div/div/div[2]/span/text()').get().replace("\n", "")
+                except Exception:
+                    tmp_title = ''
 
             try:
                 tmp_desc = item.xpath('.//a/div/div[2]/div[3]/text()').get().replace("\n", "")
             except Exception:
-                tmp_desc = item.xpath('.//a/div/div/div[3]/text()').get().replace("\n", "")
+                tmp_desc = ''
+
+            if tmp_desc == '':
+                try:
+                    tmp_desc = item.xpath('.//a/div/div/div[3]/text()').get().replace("\n", "")
+                except Exception:
+                    tmp_desc = ''
+
+            if tmp_desc == '':
+                try:
+                    tmp_desc = item.xpath('.//a/div/div/div[3]/span/text()').get().replace("\n", "")
+                except Exception:
+                    tmp_desc = ''
 
             try:
                 tmp_link = item.xpath('.//a/@href').get()
@@ -190,7 +215,7 @@ class googleNewsSpider(Spider):
 
             results.append(
                 {
-                    'title': tmp_text,
+                    'title': tmp_title,
                     'desc': tmp_desc,
                     'author': tmp_author,
                     'datetime': pub_datetime,

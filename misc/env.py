@@ -23,6 +23,7 @@ class CookerHelper:
             url = 'http://192.168.1.2:8088'
         else:
             url = 'https://cookie.wesleyan.site'
+            # url = 'https://cookies.xm.mk'
 
         cookie_cloud = PyCookieCloud(url, 'uMTz6qLwhiJrfSEffyC4mb', 'gw201221')
         self.decrypted_data = cookie_cloud.get_decrypted_data()
