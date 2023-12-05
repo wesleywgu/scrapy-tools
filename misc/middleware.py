@@ -192,7 +192,6 @@ class SeleniumMiddleware:
 class CustomHttpsProxyMiddleware(object):
 
     def process_request(self, request, spider):
-        # TODO implement complex proxy providing algorithm
         if self.use_proxy(request):
             p = get_https_proxy()
             try:
@@ -206,11 +205,11 @@ class CustomHttpsProxyMiddleware(object):
         using direct download for depth <= 2
         using proxy with probability 0.3
         """
-        # if "depth" in request.meta and int(request.meta['depth']) <= 2:
-        #    return False
-        # i = random.randint(1, 10)
-        # return i <= 2
-        return True
+        if "depth" in request.meta and int(request.meta['depth']) <= 2:
+            return False
+        i = random.randint(1, 10)
+        return i <= 2
+        # return True
 
 
 class LocalHttpProxyMiddleware(object):
