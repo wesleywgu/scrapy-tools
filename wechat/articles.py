@@ -8,15 +8,22 @@ if __name__ == '__main__':
     option.set_capability("platformName", "Android")
     option.set_capability("platformVersion", "7.1.2")
     option.set_capability("deviceName", "emulator-5554")
-    # option.set_capability("appPackage", "com.tencent.mm")
-    # option.set_capability("appActivity", "com.tencent.mm.ui.LauncherUI")
-    # option.set_capability("noReset", True)
-    # option.set_capability("unicodeKeyboard", True)
-    # option.set_capability("resetKeyboard", True)
+    option.set_capability("appPackage", "com.tencent.mm")
+    option.set_capability("appActivity", "com.tencent.mm.ui.LauncherUI")
+    option.set_capability("noReset", True)
+    option.set_capability("unicodeKeyboard", True)
+    option.set_capability("resetKeyboard", True)
 
     driver = webdriver.Remote('http://127.0.0.1:4723/wd/hub', options=option)
 
+    # 点击搜索
     driver.find_element(AppiumBy.XPATH, '(//android.widget.ImageView[@resource-id="com.tencent.mm:id/f15"])[1]').click()
+    # 点击搜搜内容框
+    driver.find_element(AppiumBy.ID,'com.tencent.mm:id/cd7').click()
+    # 输入搜索内容
+    driver.find_element(AppiumBy.ID, 'com.tencent.mm:id/cd7').send_keys("拼多多")
+    # 点击搜索结果页跳转按钮
+    driver.find_element(AppiumBy.ID,'com.tencent.mm:id/lm0').click()
 
     # print("去登录")
     # sleep(5)
