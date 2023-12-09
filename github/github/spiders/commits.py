@@ -33,8 +33,9 @@ class githubCommitsSpider(Spider):
                 yield scrapy.Request(url=url, callback=self.parse_link_urls)
         else:
             urls = [
-                # "https://github.com/flankerhqd?tab=overview&from=2023-10-23&to=2023-11-22",
-                "https://github.com/easychen?tab=overview&from=2023-10-23&to=2023-11-22",
+                # "https://github.com/flankerhqd",
+                "https://github.com/flankerhqd?tab=overview&from=2023-11-09&to=2023-12-09",
+                "https://github.com/easychen?tab=overview&from=2023-11-09&to=2023-12-09",
             ]
             for url in urls:
                 yield scrapy.Request(url=url, callback=self.parse_link_urls)
@@ -60,7 +61,7 @@ class githubCommitsSpider(Spider):
             commit['url'] = 'https://github.com' + url
 
             commit['content'] = card.css('p.mb-1 a::text').get()
-            commit['author'] = card.css('span.commit-author.user-mention::text').get()
+            commit['author'] = card.css('a.commit-author.user-mention::text').get()
 
             utc_time_str = card.xpath('//relative-time/@datetime').get()
             # 将UTC时间字符串转换为datetime对象
