@@ -40,9 +40,13 @@ class googleNewsSpider(Spider):
             results = db.execute(
                 "select channel_url from pdd_monitor_source where name='Google' and channel_url like '%news%' and url_grade between 1 and 2")
             self.logger.debug("execute start_requests finish query sql")
+
             for row in results:
                 url = row[0]
                 self.logger.debug(url)
+
+            for row in results:
+                url = row[0]
                 yield Request(url=url, callback=self.parse)
         else:
             urls = [

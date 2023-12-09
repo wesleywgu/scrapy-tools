@@ -33,6 +33,9 @@ class googleSearchSpider(Spider):
             for row in results:
                 url = row[0]
                 self.logger.debug(url)
+
+            for row in results:
+                url = row[0]
                 yield Request(url=url, callback=self.parse)
         else:
             urls = [

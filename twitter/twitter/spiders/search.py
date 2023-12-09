@@ -70,6 +70,9 @@ class twitterSpider(Spider):
             for row in results:
                 url = row[0]
                 self.logger.info(url)
+
+            for row in results:
+                url = row[0]
                 self.all_urls.put(url)
 
             yield SeleniumRequest(url=self.all_urls.get(), callback=self.parse_result, cookies=self.cookie_dict)

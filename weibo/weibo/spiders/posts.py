@@ -42,11 +42,17 @@ class UserPostsSpider(scrapy.Spider):
             results = db.execute(
                 "select channel_url from pdd_monitor_source where channel_url like '%https://weibo.com/u%' and url_grade between 1 and 2")
             self.logger.debug("execute start_requests finish query sql")
+
             for row in results:
                 url = row[0]
                 uid = url.split('/')[-1]
                 new_url = self.url_template.format(uid=uid)
                 self.logger.info("old={url}, new_url={new_url}".format(url=url, new_url=new_url))
+
+            for row in results:
+                url = row[0]
+                uid = url.split('/')[-1]
+                new_url = self.url_template.format(uid=uid)
                 yield Request(url=new_url, callback=self.parse)
         else:
             urls = [

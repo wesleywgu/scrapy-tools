@@ -35,7 +35,7 @@ MACHINE_ENV = os.environ.get('env', 'dev')
 
 if MACHINE_ENV == 'online':
     DOWNLOADER_MIDDLEWARES = {
-        # 'misc.middleware.CustomHttpsProxyMiddleware': 399,
+        'misc.middleware.CustomHttpsProxyMiddleware': 399,
         'misc.middleware.TooManyRequestsRetryMiddleware': 400,
         'misc.middleware.BaiduUserAgentMiddleware': 401,
 
