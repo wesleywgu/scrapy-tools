@@ -107,12 +107,6 @@ class baiduSpider(Spider):
         """
         bs = BeautifulSoup(self._format(content), "html.parser")
 
-        try:
-            bs.find("div", id="wrapper_wrapper").find("span", class_="nums")
-        except Exception:
-            self.logger.info("此页面无内容")
-            return {"results": [], "total": 0}
-
         # 搜索结果总数
         total = int(
             bs.find("div", id="wrapper_wrapper")
