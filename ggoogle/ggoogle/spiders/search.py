@@ -42,7 +42,8 @@ class googleSearchSpider(Spider):
                 # 'https://www.google.com/search?q=pdd&sca_esv=585373397&biw=1680&bih=826&sxsrf=AM9HkKnvRzgTiM-9GIWw61P_daZPCasX8w%3A1700986382857&ei=Dv5iZc_5M5aehwOWj4CQAw&ved=0ahUKEwjPuPiInOGCAxUWz2EKHZYHADIQ4dUDCBA&uact=5&oq=%E6%8B%BC%E5%A4%9A%E5%A4%9A+%E5%8D%A1%E5%B7%B4%E6%96%AF%E5%9F%BA&gs_lp=Egxnd3Mtd2l6LXNlcnAiFuaLvOWkmuWkmiDljaHlt7Tmlq_ln7oyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsANImQVQAFgAcAF4AZABAJgBAKABAKoBALgBA8gBAOIDBBgAIEGIBgGQBgo&sclient=gws-wiz-serp&hl=zh-CN&type=gsearch&lr=lang_zh-CN'
                 # 'https://www.google.com/search?q=%E6%8B%BC%E5%A4%9A%E5%A4%9A+%E5%8D%A1%E5%B7%B4%E6%96%AF%E5%9F%BA&oq=%E6%8B%BC%E5%A4%9A%E5%A4%9A+%E5%8D%A1%E5%B7%B4&gs_lcrp=EgZjaHJvbWUqDAgBECMYJxiABBiKBTIGCAAQRRg5MgwIARAjGCcYgAQYigUyBwgCEAAYgAQyCQgDEAAYDBiABDIGCAQQABgeMgYIBRBFGDwyBggGEEUYPDIGCAcQRRg80gEIODE5M2owajeoAgCwAgA&sourceid=chrome&ie=UTF-8&&hl=zh-CN',
                 # 'https://www.google.com/search?q=%E6%8B%BC%E5%A4%9A%E5%A4%9A&sca_esv=585373397&biw=1680&bih=826&sxsrf=AM9HkKnvRzgTiM-9GIWw61P_daZPCasX8w%3A1700986382857&ei=Dv5iZc_5M5aehwOWj4CQAw&ved=0ahUKEwjPuPiInOGCAxUWz2EKHZYHADIQ4dUDCBA&uact=5&oq=%E6%8B%BC%E5%A4%9A%E5%A4%9A+%E5%8D%A1%E5%B7%B4%E6%96%AF%E5%9F%BA&gs_lp=Egxnd3Mtd2l6LXNlcnAiFuaLvOWkmuWkmiDljaHlt7Tmlq_ln7oyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsANImQVQAFgAcAF4AZABAJgBAKABAKoBALgBA8gBAOIDBBgAIEGIBgGQBgo&sclient=gws-wiz-serp&hl=zh-CN&type=gsearch',
-                'https://www.google.com/search?q=拼多多 CISA&sca_esv=585373397&biw=1680&bih=826&sxsrf=AM9HkKnvRzgTiM-9GIWw61P_daZPCasX8w%3A1700986382857&ei=Dv5iZc_5M5aehwOWj4CQAw&ved=0ahUKEwjPuPiInOGCAxUWz2EKHZYHADIQ4dUDCBA&uact=5&oq=%E6%8B%BC%E5%A4%9A%E5%A4%9A+%E5%8D%A1%E5%B7%B4%E6%96%AF%E5%9F%BA&gs_lp=Egxnd3Mtd2l6LXNlcnAiFuaLvOWkmuWkmiDljaHlt7Tmlq_ln7oyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsANImQVQAFgAcAF4AZABAJgBAKABAKoBALgBA8gBAOIDBBgAIEGIBgGQBgo&sclient=gws-wiz-serp&hl=zh-CN&type=gsearch',
+                # 'https://www.google.com/search?q=拼多多 CISA&sca_esv=585373397&biw=1680&bih=826&sxsrf=AM9HkKnvRzgTiM-9GIWw61P_daZPCasX8w%3A1700986382857&ei=Dv5iZc_5M5aehwOWj4CQAw&ved=0ahUKEwjPuPiInOGCAxUWz2EKHZYHADIQ4dUDCBA&uact=5&oq=%E6%8B%BC%E5%A4%9A%E5%A4%9A+%E5%8D%A1%E5%B7%B4%E6%96%AF%E5%9F%BA&gs_lp=Egxnd3Mtd2l6LXNlcnAiFuaLvOWkmuWkmiDljaHlt7Tmlq_ln7oyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsANImQVQAFgAcAF4AZABAJgBAKABAKoBALgBA8gBAOIDBBgAIEGIBgGQBgo&sclient=gws-wiz-serp&hl=zh-CN&type=gsearch',
+                'https://www.google.com/search?q=%E6%8B%BC%E5%A4%9A%E5%A4%9A%20%E8%B0%B7%E6%AD%8C%E5%BA%94%E7%94%A8%E5%95%86%E5%BA%97&sca_esv=585373397&biw=1680&bih=826&sxsrf=AM9HkKnvRzgTiM-9GIWw61P_daZPCasX8w%3A1700986382857&ei=Dv5iZc_5M5aehwOWj4CQAw&ved=0ahUKEwjPuPiInOGCAxUWz2EKHZYHADIQ4dUDCBA&uact=5&oq=%E6%8B%BC%E5%A4%9A%E5%A4%9A+%E5%8D%A1%E5%B7%B4%E6%96%AF%E5%9F%BA&gs_lp=Egxnd3Mtd2l6LXNlcnAiFuaLvOWkmuWkmiDljaHlt7Tmlq_ln7oyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsAMyChAAGEcY1gQYsANImQVQAFgAcAF4AZABAJgBAKABAKoBALgBA8gBAOIDBBgAIEGIBgGQBgo&sclient=gws-wiz-serp&hl=zh-CN&type=gsearch',
             ]
             for url in urls:
                 yield Request(url=url, callback=self.parse)
@@ -170,10 +171,20 @@ class googleSearchSpider(Spider):
             except Exception:
                 tmp_author = ''
 
+            # 发布时间
             try:
                 tmp_date_str = item.css('div.VwiC3b.yXK7lf.lyLwlc.yDYNvb.W8l4ac.lEBKkf span span::text').get().replace(
                     "\n", "")
+            except Exception:
+                tmp_date_str = ''
 
+            if tmp_date_str == '':
+                try:
+                    tmp_date_str = item.xpath('.//div/div[2]/div/span[1]/span/text()').get().replace("\n", "")
+                except Exception:
+                    tmp_date_str = ''
+
+            if tmp_date_str == '':
                 url = response.request.url
                 parse = urlparse(url)
                 query = parse.query
@@ -184,25 +195,37 @@ class googleSearchSpider(Spider):
                     pub_datetime = self.en_date_parser(tmp_date_str)
                 else:
                     pub_datetime = self.chinese_date_parser(tmp_date_str)
-            except Exception:
+            else:
                 pub_datetime = ''
 
+            # 内容简介
             try:
                 tmp_desc = item.xpath('.//div/div[2]/div/text()').get().replace("\n", "")
                 tmp_desc = self.remove_html_tags(tmp_desc)
             except Exception:
+                tmp_desc = ''
+
+            if tmp_desc == '':
+                try:
+                    tmp_desc = item.xpath('.//div/div[2]/div/span[2]').get().replace("\n", "")
+                    tmp_desc = self.remove_html_tags(tmp_desc)
+                except Exception:
+                    tmp_desc = ''
+
+            if tmp_desc == '':
                 try:
                     tmp_desc = item.css('div.VwiC3b.yXK7lf.lyLwlc.yDYNvb.W8l4ac.lEBKkf span').get().replace("\n", "")
                     tmp_desc = self.remove_html_tags(tmp_desc)
                 except Exception:
-                    pass
+                    tmp_desc = ''
 
+            if tmp_desc == '':
                 try:
                     tmp_desc = item.css(
                         'div.VwiC3b.yXK7lf.lyLwlc.yDYNvb.W8l4ac.lEBKkf span:nth-child(2)').get().replace("\n", "")
                     tmp_desc = self.remove_html_tags(tmp_desc)
                 except Exception:
-                    pass
+                    tmp_desc = ''
 
             try:
                 tmp_link = item.xpath('.//a/@href').get()
