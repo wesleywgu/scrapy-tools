@@ -184,7 +184,7 @@ class googleSearchSpider(Spider):
                 except Exception:
                     tmp_date_str = ''
 
-            if tmp_date_str == '':
+            if tmp_date_str != '':
                 url = response.request.url
                 parse = urlparse(url)
                 query = parse.query
