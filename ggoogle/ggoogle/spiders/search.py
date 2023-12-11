@@ -32,7 +32,7 @@ class googleSearchSpider(Spider):
             self.logger.debug("execute start_requests finish query sql")
             for row in results:
                 url = row[0]
-                self.logger.debug(url)
+                self.logger.info(url)
 
             for row in results:
                 url = row[0]
