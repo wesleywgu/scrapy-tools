@@ -2,7 +2,6 @@ import os
 import sys
 from datetime import datetime
 
-import requests
 import scrapy
 from scrapy import Request
 
@@ -58,7 +57,7 @@ class weibo_searchSpider(Spider):
         """解析搜索结果的信息"""
         is_empty = response.xpath('//div[@class="card card-no-result s-pt20b40"]')
         if is_empty:
-            print('当前页面搜索结果为空')
+            self.logger.info('当前页面搜索结果为空, 请求地址：' + response.request.url)
         else:
             for weibo in self.parse_weibo(response):
                 i = WeiboDisplayItem()
