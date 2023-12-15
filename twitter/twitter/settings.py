@@ -49,7 +49,7 @@ if MACHINE_ENV == 'online':
     }
 
     SELENIUM_DRIVER_ARGUMENTS = [
-        # '--headless',
+        '--headless',
         '--no-sandbox',
         '--disable-dev-shm-usage',
         '--disable-gpu',
@@ -69,7 +69,7 @@ else:
         # 'crawlab.CrawlabPipeline': 300,
     }
     SELENIUM_DRIVER_ARGUMENTS = [
-        '--headless',
+        # '--headless',
         '--no-sandbox',
         '--disable-dev-shm-usage',
         '--disable-gpu',
