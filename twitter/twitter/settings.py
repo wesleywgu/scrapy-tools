@@ -25,7 +25,16 @@ NEWSPIDER_MODULE = 'twitter.spiders'
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 # USER_AGENT = 'twitter (+http://www.yourdomain.com)'
 
-MACHINE_ENV = os.environ.get('env','dev')
+MACHINE_ENV = os.environ.get('env', 'dev')
+
+# COOKIES_ENABLED = False
+LOG_STDOUT = True
+ROBOTSTXT_OBEY = False
+DOWNLOAD_DELAY = 10
+AUTOTHROTTLE_ENABLED = True
+
+SELENIUM_DRIVER_NAME = 'chrome'
+SELENIUM_DRIVER_EXECUTABLE_PATH = which('chromedriver')
 
 if MACHINE_ENV == 'online':
     DOWNLOADER_MIDDLEWARES = {
@@ -38,9 +47,19 @@ if MACHINE_ENV == 'online':
         # 'twitter.pipelines.RedisPipeline': 301,
         'crawlab.CrawlabPipeline': 300,
     }
+
+    SELENIUM_DRIVER_ARGUMENTS = [
+        # '--headless',
+        '--no-sandbox',
+        '--disable-dev-shm-usage',
+        '--disable-gpu',
+        # '--proxy-server=%s' % '127.0.0.1:7890',
+        '--user-agent=%s' % 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.50 Safari/537.36'
+    ]
+    LOG_LEVEL = 'INFO'
 else:
     DOWNLOADER_MIDDLEWARES = {
-        'misc.middleware.CustomHttpProxyMiddleware': 400,
+        # 'misc.middleware.CustomHttpProxyMiddleware': 400,
         'misc.middleware.SeleniumMiddleware': 401,
     }
 
@@ -49,21 +68,11 @@ else:
         # 'twitter.pipelines.RedisPipeline': 301,
         # 'crawlab.CrawlabPipeline': 300,
     }
-
-LOG_LEVEL = 'INFO'
-# COOKIES_ENABLED = False
-LOG_STDOUT = True
-ROBOTSTXT_OBEY = False
-DOWNLOAD_DELAY = 10
-AUTOTHROTTLE_ENABLED = True
-
-SELENIUM_DRIVER_NAME = 'chrome'
-SELENIUM_DRIVER_EXECUTABLE_PATH = which('chromedriver')
-SELENIUM_DRIVER_ARGUMENTS = [
-    '--headless',
-    '--no-sandbox',
-    '--disable-dev-shm-usage',
-    '--disable-gpu',
-    # '--proxy-server=%s' % '127.0.0.1:7890',
-    '--user-agent=%s' % 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.50 Safari/537.36'
-]
+    SELENIUM_DRIVER_ARGUMENTS = [
+        '--headless',
+        '--no-sandbox',
+        '--disable-dev-shm-usage',
+        '--disable-gpu',
+        '--user-agent=%s' % 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.50 Safari/537.36'
+    ]
+    LOG_LEVEL = 'DEBUG'
