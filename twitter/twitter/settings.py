@@ -54,7 +54,7 @@ if MACHINE_ENV == 'online':
         '--disable-dev-shm-usage',
         '--disable-gpu',
         # '--proxy-server=%s' % '127.0.0.1:7890',
-        '--user-agent=%s' % 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.50 Safari/537.36'
+        '--user-agent=%s' % 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36'
     ]
     LOG_LEVEL = 'INFO'
 else:
@@ -73,6 +73,6 @@ else:
         '--no-sandbox',
         '--disable-dev-shm-usage',
         '--disable-gpu',
-        '--user-agent=%s' % 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.50 Safari/537.36'
+        '--user-agent=%s' % 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36'
     ]
     LOG_LEVEL = 'DEBUG'
