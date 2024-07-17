@@ -20,7 +20,7 @@ class CookerHelper:
         env = os.environ.get('env', 'dev')
 
         if env == 'online':
-            url = 'http://192.168.1.2:8088'
+            url = 'http://192.168.1.253:8088'
         else:
             url = 'https://cookie.wesleyan.site'
             # url = 'https://cookies.xm.mk'

@@ -29,7 +29,7 @@ FREE_PROXIES = [
 def get_https_proxy():
     env = get_env()
     if env == 'online':
-        return requests.get("http://192.168.1.2:5010/get?type=https").json()
+        return requests.get("http://192.168.1.253:5010/get?type=https").json()
     else:
         return requests.get("http://proxy.wesleyan.site/get?type=https").json()
 

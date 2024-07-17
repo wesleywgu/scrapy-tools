@@ -19,7 +19,7 @@ class githubCommitsSpider(Spider):
 
     def start_requests(self):
         if self.env == 'online':
-            db = MySQLUtil('192.168.1.2', 3366, 'root', 'gw201221', 'pdd')
+            db = MySQLUtil('192.168.1.253', 3366, 'root', 'gw201221', 'pdd')
             results = db.execute(
                 "select channel_url from pdd_monitor_source where name<>'Github' and channel='Github' and url_grade between 1 and 2")
 

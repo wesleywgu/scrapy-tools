@@ -37,7 +37,7 @@ class UserPostsSpider(scrapy.Spider):
 
     def start_requests(self):
         if self.env == 'online':
-            db = MySQLUtil('192.168.1.2', 3366, 'root', 'gw201221', 'pdd')
+            db = MySQLUtil('192.168.1.253', 3366, 'root', 'gw201221', 'pdd')
             self.logger.debug("execute start_requests start query sql")
             results = db.execute(
                 "select channel_url from pdd_monitor_source where channel_url like '%https://weibo.com/u%' and url_grade between 1 and 2")

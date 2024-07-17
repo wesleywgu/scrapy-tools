@@ -13,7 +13,7 @@ if __name__ == "__main__":
     today_collection_name = 'results_scrapy_tools.scripts.today'
     collection_prefix = "results_scrapy_tools"
 
-    mongo_util = MongoDBUtil(ip="192.168.1.2", db_name="crawlab", port="27017")
+    mongo_util = MongoDBUtil(ip="192.168.1.253", db_name="crawlab", port="27017")
 
     try:
         collection_names = mongo_util.list_collection_names()
