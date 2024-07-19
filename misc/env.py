@@ -20,12 +20,12 @@ class CookerHelper:
         env = os.environ.get('env', 'dev')
 
         if env == 'online':
-            url = 'http://192.168.1.253:8088'
+            url = 'http://192.168.1.253:8988'
         else:
             url = 'https://cookie.wesleyan.site'
             # url = 'https://cookies.xm.mk'
 
-        cookie_cloud = PyCookieCloud(url, 'uMTz6qLwhiJrfSEffyC4mb', 'gw201221')
+        cookie_cloud = PyCookieCloud(url, '4gsfcNA7f5FeJAcHaetCbT', 'o3BxeJxjxgtspgW6UKSV8D')
         self.decrypted_data = cookie_cloud.get_decrypted_data()
         if self.decrypted_data:
             self.logger.info('cookie加载成功, cookie=' + json.dumps(self.decrypted_data))
