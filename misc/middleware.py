@@ -198,7 +198,7 @@ class CustomHttpsProxyMiddleware(object):
                 request.meta['proxy'] = "https://%s" % p['proxy']
                 log.debug("https proxy=" + json.dumps(p))
             except Exception as e:
-                log.critical("Exception %s" % e)
+                log.critical("Exception in process_request baidu %s" % e)
 
     def use_proxy(self, request):
         """
