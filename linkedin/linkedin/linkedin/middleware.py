@@ -16,7 +16,7 @@ class CustomHttpProxyMiddleware(object):
             try:
                 request.meta['proxy'] = "http://%s" % p['ip_port']
             except Exception as e:
-                log.msg("Exception %s" % e, _level=log.CRITICAL)
+                log.msg("Exception in process_request %s" % e, _level=log.CRITICAL)
                 
     
     def use_proxy(self, request):
